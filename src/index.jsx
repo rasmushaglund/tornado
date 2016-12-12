@@ -5,13 +5,16 @@ import { Provider } from 'react-redux'
 import { AppContainer } from 'react-hot-loader';
 import reducer from './reducers'
 import App from './app.jsx';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const store = createStore(reducer)
 
 render(
   <AppContainer>
     <Provider store={store}>
-      <App/>
+      <MuiThemeProvider>
+        <App/>
+      </MuiThemeProvider>  
     </Provider>
   </AppContainer>,
   document.querySelector("#app"));
@@ -22,7 +25,9 @@ if (module && module.hot) {
     render(
       <AppContainer>
         <Provider store={store}>
-          <App/>
+          <MuiThemeProvider>
+            <App/>
+          </MuiThemeProvider>
         </Provider>
       </AppContainer>,
       document.querySelector("#app")
