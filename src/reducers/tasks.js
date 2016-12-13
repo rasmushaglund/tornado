@@ -11,7 +11,7 @@ const extractFeature = (o, exp) => {
                     o.text.substr(feature.index + feature[0].length, o.text.length)
 
     exp.lastIndex -= feature[0].length
-    features.push(trim(feature[0]).substring(1))
+    features.push(trim(feature[0]).substring(1).toLowerCase())
   }
 
   return _.unique(features)
@@ -20,10 +20,11 @@ const extractFeature = (o, exp) => {
 const extractFeatures = (text) => {
   let stripedString = {text: text}
 
-  var tagRegexp = /(?:^|[ ])#([a-zåäöA-ZÅÄÖ0-9]+)/gm
-  var contextRegexp = /(?:^|[ ])@([a-zåäöA-ZÅÄÖ0-9]+)/gm
-  var listRegexp = /(?:^|[ ])%([a-zåäöA-ZÅÄÖ0-9]+)/gm
+  var tagRegexp = /(?:^|[ ])#([a-zåäöA-ZÅÄÖ0-9 ]+[a-zåäöA-ZÅÄÖ0-9])/gm
+  var contextRegexp = /(?:^|[ ])@([a-zåäöA-ZÅÄÖ0-9 ]+[a-zåäöA-ZÅÄÖ0-9])/gm
+  var listRegexp = /(?:^|[ ])%([a-zåäöA-ZÅÄÖ0-9 ]+[a-zåäöA-ZÅÄÖ0-9])/gm
 
+  // TODO: should save id instead
   return {
     contexts: extractFeature(stripedString, contextRegexp),
     tags: extractFeature(stripedString, tagRegexp),
@@ -34,12 +35,24 @@ const extractFeatures = (text) => {
 
 const task = (state, action) => {
   switch (action.type) {
-    case "ADD_TASK":
-      let features = extractFeatures(action.text)
+    case "UPDATE_TASK":
+      if (state.id !== action.id) {
+        return state
+      }
 
-      console.log("Adding task with features", features)
+      var features = extractFeatures(action.text)
+
+      console.log("Update task with features", features)
 
       return {
+        ...state,
+        ...features
+      }
+    case "ADD_TASK":
+      var features = extractFeatures(action.text)
+
+      return {
+        ...state,
         id: action.id,
         completed: false,
         ...features
@@ -53,6 +66,15 @@ const task = (state, action) => {
         ...state,
         completed: !state.completed
       }
+    case "TOGGLE_DELETE_TASK":
+      if (state.id !== action.id) {
+        return state
+      }
+
+      return {
+        ...state,
+        deleted: action.deleted === undefined || action.deleted
+      }
     default:
       return state
   }
@@ -65,6 +87,14 @@ const tasks = (state = [], action) => {
         ...state,
         task(undefined, action)
       ]
+    case 'UPDATE_TASK':
+      return state.map(t =>
+        task(t, action)
+      )
+    case 'TOGGLE_DELETE_TASK':
+      return state.map(t =>
+        task(t, action)
+      )
     case 'TOGGLE_TASK':
       return state.map(t =>
         task(t, action)

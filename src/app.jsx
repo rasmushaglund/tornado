@@ -1,5 +1,4 @@
 import styles from './index.scss';
-import styles2 from './sass/materialize.scss';
 import React from 'react';
 import AddTask from './components/AddTask'
 import AddList from './components/AddList'
@@ -12,7 +11,6 @@ import UiAppBar from 'material-ui/AppBar'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-
 export default class App extends React.Component {
   render() {
     return (
@@ -22,12 +20,7 @@ export default class App extends React.Component {
         <AddView />
         <AddList />
         <AddTask />
-        <View text="Test" filter="hasTag('test') || hasTag('test2')" />
-        <View text="Default" filter="!hasParent()" />
-        <View text="Rasmus lsita :)" filter="hasList('rasmus')" />
-        All views
         <Views />
-        All lists
         <Lists />
       </div>
     )

@@ -1,16 +1,20 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { toggleTask } from '../actions'
+import { toggleTask, toggleUpdateTask, toggleDeleteTask } from '../actions'
 import TaskList from './TaskList'
 
 
-let Lists = ({ lists, onTaskClick }) => (
+let Lists = ({ lists, onTaskClick, onSettingsClick, onDeleteClick }) => (
   <ul>
     <TaskList key={0}
+      onSettingsClick={onSettingsClick}
+      onDeleteClick={onDeleteClick}
       onTaskClick={onTaskClick} />
     {lists.map(list =>
       <TaskList key={list.id}
         onTaskClick={onTaskClick}
+        onSettingsClick={onSettingsClick}
+        onDeleteClick={onDeleteClick}
         {...list}
       />
     )}
@@ -22,7 +26,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps =  ({
-  onTaskClick: toggleTask
+  onTaskClick: toggleTask,
+  onSettingsClick: toggleUpdateTask,
+  onDeleteClick: toggleDeleteTask
 })
 
 Lists = connect(

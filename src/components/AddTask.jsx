@@ -1,27 +1,38 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { addTask } from '../actions'
 
-let AddTask = ({ dispatch }) => {
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import UpdateTaskDialog from './UpdateTaskDialog';
+
+import { connect } from 'react-redux'
+import { toggleUpdateTask } from '../actions'
+
+let AddTask = ({ dialogVisible, currentTask, dispatch, edit = false  }) => {
   let input
 
+  let openDialog = () =>  {
+    dispatch(toggleUpdateTask(true))
+  }
+
+  let label = edit ? "Edit Task" : "Add Task"
+
   return (
-    <form onSubmit={e => {
-        e.preventDefault()
-        if (!input.value.trim()) {
-          return
-        }
-        dispatch(addTask(input.value))
-        input.value = ''
-    }}>
-      <input ref={node => {
-          input = node
-        }} />
-      <button type="submit">Add task</button>
-    </form>
+    <div>
+      <RaisedButton label={label} onTouchTap={openDialog} />
+      <UpdateTaskDialog visible={dialogVisible} task={currentTask} />
+    </div>
   )
 }
 
-AddTask = connect()(AddTask)
+const mapStateToProps = (state) => ({
+  dialogVisible: state.ui.editTaskVisible,
+  currentTask: state.tasks.find((task) => task.id === state.ui.currentTask)
+})
+
+AddTask = connect(
+  mapStateToProps
+)(AddTask)
 
 export default AddTask

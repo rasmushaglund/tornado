@@ -1,14 +1,18 @@
-let nextTaskId = 0
-let nextListId = 0
-let nextViewId = 0
+// TODO: change this when mock is removed
+let nextTaskId = 6
+let nextListId = 3
+let nextViewId = 3
 
-export const addTask = (text, tags, contexts, lists) => ({
+export const addTask = (text) => ({
   type: 'ADD_TASK',
   id: nextTaskId++,
-  text,
-  tags,
-  contexts,
-  lists
+  text
+})
+
+export const updateTask = (id, text) => ({
+  type: 'UPDATE_TASK',
+  id: id,
+  text
 })
 
 export const addList = (text) => ({
@@ -24,7 +28,27 @@ export const addView = (text, filter) => ({
   filter
 })
 
-export const toggleTask = (id) => ({
+export const toggleDeleteTask = (id, deleted) => ({
+  type: 'TOGGLE_DELETE_TASK',
+  id,
+  deleted
+})
+
+export const toggleTask = (id, completed) => ({
   type: 'TOGGLE_TASK',
-  id
+  id,
+  completed
+})
+
+export const toggleUpdateView = () => ({
+  type: 'TOGGLE_EDIT_VIEW',
+})
+
+export const toggleUpdateTask = (task) => ({
+  type: 'TOGGLE_EDIT_TASK',
+  task
+})
+
+export const toggleUpdateList = () => ({
+  type: 'TOGGLE_EDIT_LIST',
 })

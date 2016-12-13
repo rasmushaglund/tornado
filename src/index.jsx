@@ -6,15 +6,102 @@ import { AppContainer } from 'react-hot-loader';
 import reducer from './reducers'
 import App from './app.jsx';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
-const store = createStore(reducer)
+injectTapEventPlugin();
+
+const initialState = {
+  tasks: [
+    {
+      id: 0,
+      completed: false,
+      text: "Diska",
+      deleted: false,
+      tags: ["test"],
+      lists: ["Testlista"],
+      contexts: ["hemma", "dator"]
+    },{
+      id: 1,
+      completed: false,
+      text: "Ring försäkringskassan",
+      tags: [],
+      deleted: false,
+      lists: ["Hemmafix"],
+      contexts: ["dator"]
+    },{
+      id: 2,
+      completed: false,
+      text: "Laga punktering",
+      tags: ["test"],
+      deleted: false,
+      lists: ["Hemmafix"],
+      contexts: ["hemma"]
+    },{
+      id: 3,
+      completed: true,
+      text: "Handla julklappar",
+      tags: ["test"],
+      deleted: false,
+      lists: ["Testlista"],
+      contexts: ["stan"]
+    },{
+      id: 4,
+      completed: true,
+      text: "Skotta",
+      tags: [],
+      deleted: false,
+      lists: ["Hemmafix"],
+      contexts: ["hemma"]
+    },{
+      id: 5,
+      completed: true,
+      text: "Test",
+      tags: ["test"],
+      lists: [],
+      deleted: false,
+      contexts: []
+    },
+  ],
+  lists: [
+    {
+      id: 0,
+      deleted: false,
+      text: "Testlista"
+    },
+    {
+      id: 1,
+      deleted: false,
+      text: "Hemmafix"
+    }
+  ],
+  views: [
+    {
+      id: 0,
+      deleted: false,
+      text: "Test",
+      filter: "hasTag('test') || hasList('Testlista')"
+    },{
+      id: 1,
+      deleted: false,
+      text: "Julfix",
+      filter: "hasList('Hemmafix')"
+    },{
+      id: 2,
+      deleted: false,
+      text: "Default",
+      filter: "!hasParent()"
+    },
+  ]
+}
+
+const store = createStore(reducer, initialState)
 
 render(
   <AppContainer>
     <Provider store={store}>
       <MuiThemeProvider>
         <App/>
-      </MuiThemeProvider>  
+      </MuiThemeProvider>
     </Provider>
   </AppContainer>,
   document.querySelector("#app"));
