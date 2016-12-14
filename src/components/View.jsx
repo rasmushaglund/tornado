@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
+var _ = require("underscore");
+
 import { connect } from 'react-redux'
-import { toggleTask, toggleUpdateTask, toggleDeleteTask } from '../actions'
+import { toggleUpdateView } from '../actions'
 import TaskList from './TaskList'
 
 import {Card as UiCard, CardHeader as UiCardHeader, CardText as UiCardText} from 'material-ui/Card'
@@ -8,20 +10,18 @@ import UiPaper from 'material-ui/Paper'
 
 var _ = require("underscore");
 
-let View = ({ tasks, text, onTaskClick, onSettingsClick, onDeleteClick, filter }) => {
+let View = ({ id, tasks, text, onViewSettingsClick, filter }) => {
   return (
     <UiPaper style={{marginBottom: 40}} zDepth={4}>
-        <UiCardHeader title={text} subtitle={filter}/>
-        <TaskList tasks={tasks}
-            onTaskClick={onTaskClick}
-            onSettingsClick={onSettingsClick}
-            onDeleteClick={onDeleteClick} />
+        <UiCardHeader title={text} subtitle={filter}
+          onDoubleClick={() => onViewSettingsClick(id)}/>
+        <TaskList tasks={tasks} />
     </UiPaper>
   )
 }
 
 const mapStateToProps = (state, props) => ({
-  tasks: state.tasks.filter(task => {
+  tasks: _.filter(state.tasks, task => {
     const hasTag = (tag) => {
       return _.contains(task.tags, tag)
     }
@@ -45,13 +45,12 @@ const mapStateToProps = (state, props) => ({
     return !isDeleted() && eval(props.filter)
   }),
   text: props.text,
-  filter: props.filter
+  filter: props.filter,
+  id: props.id
 })
 
 const mapDispatchToProps =  ({
-  onTaskClick: toggleTask,
-  onSettingsClick: toggleUpdateTask,
-  onDeleteClick: toggleDeleteTask
+  onViewSettingsClick: toggleUpdateView
 })
 
 View = connect(

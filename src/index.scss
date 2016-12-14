@@ -4,3 +4,13 @@
     color: white;
     padding: 5px;
 }
+
+.delete {
+  background-color: red;
+  display: none !important;
+}
+
+.task {
+  display: none !important;
+  color: blue !important;
+}

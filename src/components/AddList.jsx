@@ -1,27 +1,38 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { addList } from '../actions'
 
-let AddList = ({ dispatch }) => {
+import UpdateListDialog from './UpdateListDialog';
+
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import { connect } from 'react-redux'
+import { toggleUpdateList } from '../actions'
+
+let AddList = ({ dialogVisible, currentList, dispatch }) => {
   let input
 
+  let openDialog = () =>  {
+    dispatch(toggleUpdateList(true))
+  }
+
+  let label = currentList ? "Edit List" : "Add List"
+
   return (
-    <form onSubmit={e => {
-        e.preventDefault()
-        if (!input.value.trim()) {
-          return
-        }
-        dispatch(addList(input.value))
-        input.value = ''
-    }}>
-      <input ref={node => {
-          input = node
-        }} />
-      <button type="submit">Add list</button>
-    </form>
+    <div>
+      <RaisedButton label={label} onTouchTap={openDialog} />
+      <UpdateListDialog visible={dialogVisible} list={currentList} />
+    </div>
   )
 }
 
-AddList = connect()(AddList)
+const mapStateToProps = (state) => ({
+  dialogVisible: state.ui.editListVisible,
+  currentList: state.lists[state.ui.currentList]
+})
+
+AddList = connect(
+  mapStateToProps
+)(AddList)
 
 export default AddList

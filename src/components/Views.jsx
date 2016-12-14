@@ -1,3 +1,4 @@
+var _ = require("underscore")
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import View from './View'
@@ -13,7 +14,7 @@ const viewsStyle = {
 
 let Views = ({ views }) => (
   <div style={viewsStyle}>
-    {views.map(view =>
+    {_.map(views, view =>
       <View key={view.id}
         text={view.text}
         {...view}
@@ -23,7 +24,7 @@ let Views = ({ views }) => (
 )
 
 const mapStateToProps = (state) => ({
-  views: state.views
+  views: _.filter(state.views, (view) => !view.deleted)
 })
 
 const mapDispatchToProps =  ({

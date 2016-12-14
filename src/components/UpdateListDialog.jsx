@@ -6,32 +6,22 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux'
-import { addTask, updateTask, toggleDeleteTask, toggleUpdateTask } from '../actions'
+import { addList, updateList, toggleDeleteList, toggleUpdateList } from '../actions'
 
-let getSourceString = (task) => {
-  let result = task.text
-
-  _.each(task.contexts, (context) => result += " @" + context)
-  _.each(task.tags, (tag) => result += " #" + tag)
-  _.each(task.lists, (list) => result += " %" + list)
-
-  return result
-}
-
-let UpdateTaskDialog = ({ visible, task, dispatch }) => {
+let UpdateListDialog = ({ visible, list, dispatch }) => {
   let input
 
   let closeDialog = () =>  {
-    dispatch(toggleUpdateTask(false))
+    dispatch(toggleUpdateList(false))
   }
 
-  let label = task ? "Edit Task" : "Add Task"
+  let label = list ? "Edit List" : "Add List"
 
-  let deleteButton = task ? (
+  let deleteButton = list ? (
     <FlatButton
       label="Delete"
       onTouchTap={() => {
-        dispatch(toggleDeleteTask(task.id))
+        dispatch(toggleDeleteList(list.id))
         closeDialog()
       }}
       secondary={true}
@@ -51,10 +41,10 @@ let UpdateTaskDialog = ({ visible, task, dispatch }) => {
             return
           }
 
-          if (task) {
-            dispatch(updateTask(task.id, input.value))
+          if (list) {
+            dispatch(updateList(list.id, input.value))
           } else {
-            dispatch(addTask(input.value))
+            dispatch(addList(input.value))
           }
 
           closeDialog()
@@ -63,13 +53,13 @@ let UpdateTaskDialog = ({ visible, task, dispatch }) => {
       }}>
         <input ref={node => {
             input = node
-          }} defaultValue={task && getSourceString(task)} />
+          }} defaultValue={list && list.text} />
         <FlatButton
           label="Cancel"
           onTouchTap={closeDialog}
         />
         <FlatButton
-          label={task ? "Update" : "Add"}
+          label={list ? "Update" : "Add"}
           type="submit"
           primary={true}
           keyboardFocused={true}
@@ -80,6 +70,6 @@ let UpdateTaskDialog = ({ visible, task, dispatch }) => {
   )
 }
 
-UpdateTaskDialog = connect()(UpdateTaskDialog)
+UpdateListDialog = connect()(UpdateListDialog)
 
-export default UpdateTaskDialog
+export default UpdateListDialog

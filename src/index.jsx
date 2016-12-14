@@ -11,8 +11,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 const initialState = {
-  tasks: [
-    {
+  tasks: {
+    0: {
       id: 0,
       completed: false,
       text: "Diska",
@@ -20,7 +20,8 @@ const initialState = {
       tags: ["test"],
       lists: ["Testlista"],
       contexts: ["hemma", "dator"]
-    },{
+    },
+    1: {
       id: 1,
       completed: false,
       text: "Ring försäkringskassan",
@@ -28,7 +29,8 @@ const initialState = {
       deleted: false,
       lists: ["Hemmafix"],
       contexts: ["dator"]
-    },{
+    },
+    2: {
       id: 2,
       completed: false,
       text: "Laga punktering",
@@ -36,7 +38,8 @@ const initialState = {
       deleted: false,
       lists: ["Hemmafix"],
       contexts: ["hemma"]
-    },{
+    },
+    3: {
       id: 3,
       completed: true,
       text: "Handla julklappar",
@@ -44,7 +47,8 @@ const initialState = {
       deleted: false,
       lists: ["Testlista"],
       contexts: ["stan"]
-    },{
+    },
+    4: {
       id: 4,
       completed: true,
       text: "Skotta",
@@ -52,7 +56,8 @@ const initialState = {
       deleted: false,
       lists: ["Hemmafix"],
       contexts: ["hemma"]
-    },{
+    },
+    5: {
       id: 5,
       completed: true,
       text: "Test",
@@ -61,7 +66,7 @@ const initialState = {
       deleted: false,
       contexts: []
     },
-  ],
+  },
   lists: [
     {
       id: 0,

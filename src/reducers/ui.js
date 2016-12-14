@@ -9,7 +9,8 @@ const ui = (state = initialState, action) => {
     case "TOGGLE_EDIT_VIEW":
       return {
         ...state,
-        editViewVisible: !state.editViewVisible
+        editViewVisible: !state.editViewVisible,
+        currentView: action.view
       }
     case "TOGGLE_EDIT_TASK":
       return {
@@ -20,7 +21,8 @@ const ui = (state = initialState, action) => {
     case "TOGGLE_EDIT_LIST":
       return {
         ...state,
-        editListVisible: !state.editListVisible
+        editListVisible: !state.editListVisible,
+        currentList: action.list
       }
     default:
       return state

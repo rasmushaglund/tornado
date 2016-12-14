@@ -9,14 +9,14 @@ import UpdateTaskDialog from './UpdateTaskDialog';
 import { connect } from 'react-redux'
 import { toggleUpdateTask } from '../actions'
 
-let AddTask = ({ dialogVisible, currentTask, dispatch, edit = false  }) => {
+let AddTask = ({ dialogVisible, currentTask, dispatch  }) => {
   let input
 
   let openDialog = () =>  {
     dispatch(toggleUpdateTask(true))
   }
 
-  let label = edit ? "Edit Task" : "Add Task"
+  let label = currentTask ? "Edit Task" : "Add Task"
 
   return (
     <div>
@@ -28,7 +28,7 @@ let AddTask = ({ dialogVisible, currentTask, dispatch, edit = false  }) => {
 
 const mapStateToProps = (state) => ({
   dialogVisible: state.ui.editTaskVisible,
-  currentTask: state.tasks.find((task) => task.id === state.ui.currentTask)
+  currentTask: state.tasks[state.ui.currentTask]
 })
 
 AddTask = connect(

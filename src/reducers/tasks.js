@@ -11,7 +11,7 @@ const extractFeature = (o, exp) => {
                     o.text.substr(feature.index + feature[0].length, o.text.length)
 
     exp.lastIndex -= feature[0].length
-    features.push(trim(feature[0]).substring(1).toLowerCase())
+    features.push(trim(feature[0]).substring(1))
   }
 
   return _.unique(features)
@@ -36,10 +36,6 @@ const extractFeatures = (text) => {
 const task = (state, action) => {
   switch (action.type) {
     case "UPDATE_TASK":
-      if (state.id !== action.id) {
-        return state
-      }
-
       var features = extractFeatures(action.text)
 
       console.log("Update task with features", features)
@@ -58,19 +54,11 @@ const task = (state, action) => {
         ...features
       }
     case "TOGGLE_TASK":
-      if (state.id !== action.id) {
-        return state
-      }
-
       return {
         ...state,
         completed: !state.completed
       }
     case "TOGGLE_DELETE_TASK":
-      if (state.id !== action.id) {
-        return state
-      }
-
       return {
         ...state,
         deleted: action.deleted === undefined || action.deleted
@@ -81,26 +69,15 @@ const task = (state, action) => {
 }
 
 const tasks = (state = [], action) => {
-  switch (action.type) {
-    case 'ADD_TASK':
-      return [
-        ...state,
-        task(undefined, action)
-      ]
-    case 'UPDATE_TASK':
-      return state.map(t =>
-        task(t, action)
-      )
-    case 'TOGGLE_DELETE_TASK':
-      return state.map(t =>
-        task(t, action)
-      )
-    case 'TOGGLE_TASK':
-      return state.map(t =>
-        task(t, action)
-      )
-    default:
-      return state
+  let actions = ['ADD_TASK', 'UPDATE_TASK', 'TOGGLE_DELETE_TASK', 'TOGGLE_TASK']
+
+  if (_.contains(actions, action.type)) {
+    return {
+      ...state,
+      [action.id]: task(state[action.id], action)
+    }
+  } else {
+    return state
   }
 }
 

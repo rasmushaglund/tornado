@@ -5,32 +5,53 @@ import UiList from 'material-ui/List/List'
 import UiListItem from 'material-ui/List/ListItem'
 
 import {blue500, grey300, red700} from 'material-ui/styles/colors';
+import { toggleTask, toggleUpdateTask, toggleDeleteTask } from '../actions'
 
 import IconDone from 'material-ui/svg-icons/action/done';
 import IconClear from 'material-ui/svg-icons/content/clear';
 
-let TaskList = ({ tasks, onTaskClick, onSettingsClick, onDeleteClick }) => {
-  return (
-  <UiList>
-    {tasks && tasks.map(task =>
+class Task extends React.Component {
+  constructor () {
+    super()
+    this.state = {hover: false}
+  }
+
+  render () {
+    let task = this.props.task
+    return (
       <UiListItem
-        key={task.id}
         primaryText={task.text}
         leftIcon={
           <IconDone color={task.completed ? blue500 : grey300 }
-            onClick={() => onTaskClick(task.id)} />
+            onClick={() => this.props.onTaskClick(task.id)} />
         }
+        onMouseOver={() => this.setState({hover:true})}
+        onMouseLeave={() => this.setState({hover:false})}
         rightIcon={
           <IconClear color={red700}
+            style={{display: this.state.hover ? "block" : "none"}}
             onClick={e => {
               e.preventDefault()
-              onDeleteClick(task.id)}
-            } />
+              this.props.onDeleteClick(task.id)}
+            } className="delete" />
         }
-        onDoubleClick={() => onSettingsClick(task.id)} />
-    )}
-  </UiList>
-)
+        onDoubleClick={() => this.props.onSettingsClick(task.id)} />
+    )
+  }
+}
+
+let TaskList = ({ tasks, onTaskClick, onSettingsClick, onDeleteClick }) => {
+  return (
+    <UiList>
+      {tasks && tasks.map(task =>
+        <Task task={task}
+          key={task.id}
+          onSettingsClick={onSettingsClick}
+          onDeleteClick={onDeleteClick}
+          onTaskClick={onTaskClick} />
+      )}
+    </UiList>
+  )
 }
 
 TaskList.propTypes = {
@@ -39,9 +60,21 @@ TaskList.propTypes = {
     completed: PropTypes.bool.isRequired,
     text: PropTypes.string.isRequired
   }).isRequired),
-  onTaskClick: PropTypes.func.isRequired,
-  onSettingsClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired
 }
+
+const mapStateToProps = (state) => ({
+})
+
+const mapDispatchToProps =  ({
+  onTaskClick: toggleTask,
+  onSettingsClick: toggleUpdateTask,
+  onDeleteClick: toggleDeleteTask
+})
+
+TaskList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskList)
+
 
 export default TaskList

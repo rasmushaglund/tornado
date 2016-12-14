@@ -6,37 +6,27 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux'
-import { addTask, updateTask, toggleDeleteTask, toggleUpdateTask } from '../actions'
+import { addView, updateView, toggleUpdateView, toggleDeleteView } from '../actions'
 
-let getSourceString = (task) => {
-  let result = task.text
-
-  _.each(task.contexts, (context) => result += " @" + context)
-  _.each(task.tags, (tag) => result += " #" + tag)
-  _.each(task.lists, (list) => result += " %" + list)
-
-  return result
-}
-
-let UpdateTaskDialog = ({ visible, task, dispatch }) => {
-  let input
+let UpdateViewDialog = ({ visible, view, dispatch }) => {
+  let filterInput, textInput
 
   let closeDialog = () =>  {
-    dispatch(toggleUpdateTask(false))
+    dispatch(toggleUpdateView(false))
   }
 
-  let label = task ? "Edit Task" : "Add Task"
+  let label = view ? "Edit View" : "Add View"
 
-  let deleteButton = task ? (
+  let deleteButton = view ? (
     <FlatButton
       label="Delete"
       onTouchTap={() => {
-        dispatch(toggleDeleteTask(task.id))
+        dispatch(toggleDeleteView(view.id))
         closeDialog()
       }}
       secondary={true}
     />
-  ) : null;
+  ) : null
 
   return (
     <Dialog
@@ -47,29 +37,33 @@ let UpdateTaskDialog = ({ visible, task, dispatch }) => {
         autoScrollBodyContent={true} >
       <form onSubmit={e => {
           e.preventDefault()
-          if (!input.value.trim()) {
+          if (!textInput.value.trim()) {
             return
           }
 
-          if (task) {
-            dispatch(updateTask(task.id, input.value))
+          if (view) {
+            dispatch(updateView(view.id, textInput.value, filterInput.value))
           } else {
-            dispatch(addTask(input.value))
+            dispatch(addView(textInput.value, filterInput.value))
           }
 
           closeDialog()
 
-          input.value = ''
+          textInput.value = ''
+          filterInput.value = ''
       }}>
         <input ref={node => {
-            input = node
-          }} defaultValue={task && getSourceString(task)} />
+            textInput = node
+          }} defaultValue={view && view.text} />
+        <input ref={node => {
+            filterInput = node
+          }} defaultValue={view && view.filter} />
         <FlatButton
           label="Cancel"
           onTouchTap={closeDialog}
         />
         <FlatButton
-          label={task ? "Update" : "Add"}
+          label={view ? "Update" : "Add"}
           type="submit"
           primary={true}
           keyboardFocused={true}
@@ -80,6 +74,6 @@ let UpdateTaskDialog = ({ visible, task, dispatch }) => {
   )
 }
 
-UpdateTaskDialog = connect()(UpdateTaskDialog)
+UpdateViewDialog = connect()(UpdateViewDialog)
 
-export default UpdateTaskDialog
+export default UpdateViewDialog
