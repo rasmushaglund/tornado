@@ -16,7 +16,7 @@ const view = (state, action) => {
         text: action.text,
         filter: action.filter
       }
-    case "TOGGLE_DELETE_VIEW":
+    case "SOFT_DELETE_VIEW":
       return {
         ...state,
         deleted: action.deleted === undefined || action.deleted
@@ -27,13 +27,15 @@ const view = (state, action) => {
 }
 
 const views = (state = [], action) => {
-  let actions = ['ADD_VIEW', 'UPDATE_VIEW', 'TOGGLE_DELETE_VIEW']
-
-  if (_.contains(actions, action.type)) {
+  if (_.contains(['ADD_VIEW', 'UPDATE_VIEW', 'SOFT_DELETE_VIEW'], action.type)) {
     return {
       ...state,
       [action.id]: view(state[action.id], action)
     }
+  } else if (_.contains(['DELETE_VIEW'], action.type)) {
+    return _.filter(state, task =>
+        view.id !== action.id
+      )
   } else {
       return state
   }

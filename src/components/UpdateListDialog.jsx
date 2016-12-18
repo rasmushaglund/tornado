@@ -6,7 +6,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux'
-import { addList, updateList, toggleDeleteList, toggleUpdateList } from '../actions'
+import { addList, updateList, softDeleteList, deleteList, toggleUpdateList } from '../actions'
 
 let UpdateListDialog = ({ visible, list, dispatch }) => {
   let input
@@ -21,7 +21,7 @@ let UpdateListDialog = ({ visible, list, dispatch }) => {
     <FlatButton
       label="Delete"
       onTouchTap={() => {
-        dispatch(toggleDeleteList(list.id))
+        dispatch(softDeleteList(list.id))
         closeDialog()
       }}
       secondary={true}

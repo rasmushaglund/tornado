@@ -3,10 +3,11 @@ var _ = require("underscore");
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux'
-import { addView, updateView, toggleUpdateView, toggleDeleteView } from '../actions'
+import { addView, updateView, toggleUpdateView, softDeleteView } from '../actions'
 
 let UpdateViewDialog = ({ visible, view, dispatch }) => {
   let filterInput, textInput
@@ -21,7 +22,7 @@ let UpdateViewDialog = ({ visible, view, dispatch }) => {
     <FlatButton
       label="Delete"
       onTouchTap={() => {
-        dispatch(toggleDeleteView(view.id))
+        dispatch(softDeleteView(view.id))
         closeDialog()
       }}
       secondary={true}
@@ -52,12 +53,17 @@ let UpdateViewDialog = ({ visible, view, dispatch }) => {
           textInput.value = ''
           filterInput.value = ''
       }}>
-        <input ref={node => {
+      <div>
+        <TextField ref={node => {
             textInput = node
-          }} defaultValue={view && view.text} />
-        <input ref={node => {
+          }} hintText="View name" defaultValue={view && view.text} />
+      </div>
+      <div>
+        <TextField ref={node => {
             filterInput = node
-          }} defaultValue={view && view.filter} />
+          }} hintText="Filter" defaultValue={view && view.filter} />
+      </div>
+
         <FlatButton
           label="Cancel"
           onTouchTap={closeDialog}

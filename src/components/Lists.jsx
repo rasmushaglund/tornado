@@ -14,9 +14,9 @@ let Lists = ({ lists, dispatch, deletedTasks }) => (
       <TaskList key={0} tasks={deletedTasks} />
     </UiPaper>
     {lists.map(list =>
-      <UiPaper style={{marginBottom: 40}} key={list.id} zDepth={4}
-        onDoubleClick={() => dispatch(toggleUpdateList(list.id))} >
-        <UiCardHeader title={list.text} />
+      <UiPaper style={{marginBottom: 40}} key={list.id} zDepth={4} >
+        <UiCardHeader title={list.text}
+          onDoubleClick={() => dispatch(toggleUpdateList(list.id))} />
         <TaskList key={list.id} {...list} />
       </UiPaper>
     )}
@@ -24,10 +24,10 @@ let Lists = ({ lists, dispatch, deletedTasks }) => (
 )
 
 const mapStateToProps = (state) => ({
-  lists: _.map(state.lists, (list) => {
-    let tasks = _.filter(state.tasks, (task) => _.contains(task.lists, list.text) && !task.deleted)
+  lists: _.chain(state.lists).filter((list) => !list.deleted).map((list) => {
+    let tasks = _.filter(state.tasks, (task) => _.contains(task.lists, list.id) && !task.deleted)
     return Object.assign(list, {tasks: tasks})
-  }),
+  }).value(),
   deletedTasks: _.filter(state.tasks, (task) => task.deleted)
 })
 

@@ -2,23 +2,35 @@
 let nextTaskId = 6
 let nextListId = 3
 let nextViewId = 3
+let nextContextId = 3
 
-export const addTask = (text) => ({
+export const addTask = (text, lists, contexts, tags) => ({
   type: 'ADD_TASK',
   id: nextTaskId++,
-  text
+  text,
+  lists,
+  contexts,
+  tags
 })
 
-export const updateTask = (id, text) => ({
+export const updateTask = (id, text, lists, contexts, tags) => ({
   type: 'UPDATE_TASK',
   id: id,
-  text
+  text,
+  lists,
+  contexts,
+  tags
 })
 
-export const toggleDeleteTask = (id, deleted) => ({
-  type: 'TOGGLE_DELETE_TASK',
+export const softDeleteTask = (id, deleted = true) => ({
+  type: 'SOFT_DELETE_TASK',
   id,
   deleted
+})
+
+export const deleteTask = (id) => ({
+  type: 'DELETE_TASK',
+  id
 })
 
 export const toggleTask = (id, completed) => ({
@@ -47,14 +59,50 @@ export const updateList = (id, text) => ({
   text
 })
 
-export const toggleDeleteList = (id, deleted) => ({
-  type: 'TOGGLE_DELETE_LIST',
+export const softDeleteList = (id, deleted = true) => ({
+  type: 'SOFT_DELETE_LIST',
   id,
   deleted
 })
 
+export const deleteList = (id) => ({
+  type: 'DELETE_LIST',
+  id
+})
+
 export const toggleUpdateList = (list) => ({
   type: 'TOGGLE_EDIT_LIST',
+  list
+})
+
+
+
+
+export const addContext = (text) => ({
+  type: 'ADD_CONTEXT',
+  id: nextListId++,
+  text
+})
+
+export const updateContext = (id, text) => ({
+  type: 'UPDATE_CONTEXT',
+  id: id,
+  text
+})
+
+export const softDeleteContext = (id, deleted = true) => ({
+  type: 'SOFT_DELETE_CONTEXT',
+  id,
+  deleted
+})
+
+export const deleteContext = (id) => ({
+  type: 'DELETE_CONTEXT',
+  id
+})
+
+export const toggleUpdateContext = (list) => ({
+  type: 'TOGGLE_EDIT_CONTEXT',
   list
 })
 
@@ -76,10 +124,15 @@ export const updateView = (id, text, filter) => ({
   filter
 })
 
-export const toggleDeleteView = (id, deleted) => ({
-  type: 'TOGGLE_DELETE_VIEW',
+export const softDeleteView = (id, deleted = true) => ({
+  type: 'SOFT_DELETE_VIEW',
   id,
   deleted
+})
+
+export const deleteView = (id) => ({
+  type: 'DELETE_VIEW',
+  id
 })
 
 export const toggleUpdateView = (view) => ({

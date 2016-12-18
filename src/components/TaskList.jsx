@@ -3,12 +3,15 @@ import { connect } from 'react-redux'
 
 import UiList from 'material-ui/List/List'
 import UiListItem from 'material-ui/List/ListItem'
+import Checkbox from 'material-ui/Checkbox';
 
 import {blue500, grey300, red700} from 'material-ui/styles/colors';
-import { toggleTask, toggleUpdateTask, toggleDeleteTask } from '../actions'
+import { toggleTask, toggleUpdateTask, softDeleteTask, deleteTask } from '../actions'
 
 import IconDone from 'material-ui/svg-icons/action/done';
 import IconClear from 'material-ui/svg-icons/content/clear';
+import IconDeleteForever from 'material-ui/svg-icons/action/delete-forever';
+import IconUndo from 'material-ui/svg-icons/av/replay';
 
 class Task extends React.Component {
   constructor () {
@@ -18,37 +21,57 @@ class Task extends React.Component {
 
   render () {
     let task = this.props.task
+
+    let actions = task.deleted ? (
+      <div>
+        <IconUndo color={red700}
+          style={{display: this.state.hover ? "block" : "none"}}
+          onClick={e => {
+            e.preventDefault()
+            this.props.softDeleteTask(task.id, false)}
+          } className="delete" />
+        <IconDeleteForever color={red700}
+          style={{display: this.state.hover ? "block" : "none"}}
+          onClick={e => {
+            e.preventDefault()
+            this.props.deleteTask(task.id)}
+          } className="delete" />
+      </div>
+    ) : (
+      <IconClear color={red700}
+        style={{display: this.state.hover ? "block" : "none"}}
+        onClick={e => {
+          e.preventDefault()
+          this.props.softDeleteTask(task.id, true)}
+        } className="delete" />
+    )
+
     return (
       <UiListItem
         primaryText={task.text}
-        leftIcon={
-          <IconDone color={task.completed ? blue500 : grey300 }
-            onClick={() => this.props.onTaskClick(task.id)} />
-        }
         onMouseOver={() => this.setState({hover:true})}
         onMouseLeave={() => this.setState({hover:false})}
-        rightIcon={
-          <IconClear color={red700}
-            style={{display: this.state.hover ? "block" : "none"}}
-            onClick={e => {
-              e.preventDefault()
-              this.props.onDeleteClick(task.id)}
-            } className="delete" />
+        leftIcon={
+          <Checkbox checked={task.completed} onCheck={() => this.props.toggleTask(task.id, !task.completed)} />
         }
-        onDoubleClick={() => this.props.onSettingsClick(task.id)} />
+        rightIcon={
+          actions
+        }
+        onDoubleClick={() => this.props.toggleUpdateTask(task.id)} />
     )
   }
 }
 
-let TaskList = ({ tasks, onTaskClick, onSettingsClick, onDeleteClick }) => {
+let TaskList = ({ tasks, toggleTask, toggleUpdateTask, deleteTask, softDeleteTask }) => {
   return (
     <UiList>
       {tasks && tasks.map(task =>
         <Task task={task}
           key={task.id}
-          onSettingsClick={onSettingsClick}
-          onDeleteClick={onDeleteClick}
-          onTaskClick={onTaskClick} />
+          toggleTask={toggleTask}
+          toggleUpdateTask={toggleUpdateTask}
+          deleteTask={deleteTask}
+          softDeleteTask={softDeleteTask} />
       )}
     </UiList>
   )
@@ -66,9 +89,10 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps =  ({
-  onTaskClick: toggleTask,
-  onSettingsClick: toggleUpdateTask,
-  onDeleteClick: toggleDeleteTask
+  toggleTask: toggleTask,
+  toggleUpdateTask: toggleUpdateTask,
+  deleteTask: deleteTask,
+  softDeleteTask: softDeleteTask
 })
 
 TaskList = connect(

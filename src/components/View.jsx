@@ -26,16 +26,18 @@ const mapStateToProps = (state, props) => ({
       return _.contains(task.tags, tag)
     }
 
-    const hasList = (list) => {
-      return _.contains(task.lists, list)
+    const hasList = (listName) => {
+      let list = _.find(state.lists, (list) => list.text === listName)
+      return list && _.contains(task.lists, list.id)
     }
 
     const isDeleted = () => {
       return task.deleted
     }
 
-    const hasContext = (context) => {
-      return _.contains(task.contexts, context)
+    const hasContext = (contextName) => {
+      let context = _.find(state.contexts, (context) => context.text === contextName)
+      return context && _.contains(task.contexts, context.id)
     }
 
     const hasParent = () => {

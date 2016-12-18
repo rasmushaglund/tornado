@@ -18,8 +18,8 @@ const initialState = {
       text: "Diska",
       deleted: false,
       tags: ["test"],
-      lists: ["Testlista"],
-      contexts: ["hemma", "dator"]
+      lists: [0],
+      contexts: [0, 2]
     },
     1: {
       id: 1,
@@ -27,8 +27,8 @@ const initialState = {
       text: "Ring försäkringskassan",
       tags: [],
       deleted: false,
-      lists: ["Hemmafix"],
-      contexts: ["dator"]
+      lists: [1],
+      contexts: [1]
     },
     2: {
       id: 2,
@@ -36,8 +36,8 @@ const initialState = {
       text: "Laga punktering",
       tags: ["test"],
       deleted: false,
-      lists: ["Hemmafix"],
-      contexts: ["hemma"]
+      lists: [1],
+      contexts: [0]
     },
     3: {
       id: 3,
@@ -45,8 +45,8 @@ const initialState = {
       text: "Handla julklappar",
       tags: ["test"],
       deleted: false,
-      lists: ["Testlista"],
-      contexts: ["stan"]
+      lists: [0],
+      contexts: [1]
     },
     4: {
       id: 4,
@@ -54,8 +54,8 @@ const initialState = {
       text: "Skotta",
       tags: [],
       deleted: false,
-      lists: ["Hemmafix"],
-      contexts: ["hemma"]
+      lists: [1],
+      contexts: [0]
     },
     5: {
       id: 5,
@@ -96,6 +96,20 @@ const initialState = {
       text: "Default",
       filter: "!hasParent()"
     },
+  ],
+  contexts: [
+    {
+      id: 0,
+      text: "dator"
+    },
+    {
+      id: 1,
+      text: "hemma"
+    },
+    {
+      id: 2,
+      text: "stan"
+    }
   ]
 }
 
