@@ -23,20 +23,17 @@ class UpdateTaskDialog extends React.Component {
   constructor (props) {
     super(props)
 
-    console.log(props)
     this.state = {
       tags: [],
       contexts: [],
       lists: [],
       contextDataSource: [],
-      listDataSource: []
+      listDataSource: [],
+      tagDataSource: []
     }
-
-    console.log(this.state)
   }
 
   componentWillReceiveProps (props) {
-
     this.setState({
       tags: props.task && props.task.tags || [],
       contexts: props.task && props.task.contexts || [],
@@ -46,20 +43,23 @@ class UpdateTaskDialog extends React.Component {
       }),
       listDataSource: _.map(props.lists, (list) => {
         return {textKey: list.text, valueKey: list.id}
+      }),
+      tagDataSource: _.map(props.tags, (tag) => {
+        return {textKey: tag, valueKey: tag}
       })
     })
   }
 
   handleListDelete (id, input) {
-    this.setState({lists: _.filter(this.state.lists, (listId) => listId !== id)})
+    this.setState({lists: _.without(this.state.lists, id)})
   }
 
   handleContextDelete (id) {
-    this.setState({contexts: _.filter(this.state.contexts, (contextId) => contextId !== id)})
+    this.setState({contexts: _.without(this.state.contexts, id)})
   }
 
   handleTagDelete (tag) {
-    this.setState({tags: _.without(this.state.tags, t)})
+    this.setState({tags: _.without(this.state.tags, tag)})
   }
 
   handleContextSelect = (text, index) => {
@@ -80,12 +80,15 @@ class UpdateTaskDialog extends React.Component {
     }
   }
 
-  handleTaskKeyPress () {
-
+  handleTagSelect = (text, index) => {
+    let tag = index < 0 ? text : this.state.tagDataSource[index].valueKey
+    let newTags = this.state.tags.slice()
+    newTags.push(tag)
+    this.setState({tags: newTags})
   }
 
   render () {
-    let {task, visible, contexts, lists, dispatch} = this.props
+    let {task, visible, contexts, lists, tags, dispatch} = this.props
     let textInput, tagInput, contextInput, listInput
 
     let closeDialog = () =>  {
@@ -123,7 +126,9 @@ class UpdateTaskDialog extends React.Component {
     });
 
     let taskTags = this.state.tags.map((tag) => {
-      <Chip key={tag} onRequestDelete={() => this.handleTagDelete(tag)}>{tag}</Chip>
+      return (
+        <Chip key={tag} onRequestDelete={() => this.handleTagDelete(tag)}>{tag}</Chip>
+      )
     });
 
     return (
@@ -140,10 +145,14 @@ class UpdateTaskDialog extends React.Component {
             hintText="Task name"/>
           </div>
           <div>
-            <TextField ref={node => {
+            <AutoComplete ref={node => {
               tagInput = node
-            }} hintText="Add tag" onKeyUp={this.handleTaskKeyPress} />
-            {taskTags}
+            }} hintText="Add tag" onNewRequest={this.handleTagSelect}
+            openOnFocus={true}
+            filter={AutoComplete.fuzzyFilter}
+            dataSourceConfig={dataSourceConfig}
+            dataSource={this.state.tagDataSource} />
+          {taskTags}
           </div>
           <div>
             <AutoComplete ref={node => {

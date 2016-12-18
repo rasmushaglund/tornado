@@ -8,7 +8,6 @@ import Checkbox from 'material-ui/Checkbox';
 import {blue500, grey300, red700} from 'material-ui/styles/colors';
 import { toggleTask, toggleUpdateTask, softDeleteTask, deleteTask } from '../actions'
 
-import IconDone from 'material-ui/svg-icons/action/done';
 import IconClear from 'material-ui/svg-icons/content/clear';
 import IconDeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import IconUndo from 'material-ui/svg-icons/av/replay';
@@ -29,13 +28,13 @@ class Task extends React.Component {
           onClick={e => {
             e.preventDefault()
             this.props.softDeleteTask(task.id, false)}
-          } className="delete" />
+          } />
         <IconDeleteForever color={red700}
           style={{display: this.state.hover ? "block" : "none"}}
           onClick={e => {
             e.preventDefault()
             this.props.deleteTask(task.id)}
-          } className="delete" />
+          } />
       </div>
     ) : (
       <IconClear color={red700}
@@ -43,7 +42,7 @@ class Task extends React.Component {
         onClick={e => {
           e.preventDefault()
           this.props.softDeleteTask(task.id, true)}
-        } className="delete" />
+        } />
     )
 
     return (
@@ -99,6 +98,5 @@ TaskList = connect(
   mapStateToProps,
   mapDispatchToProps
 )(TaskList)
-
 
 export default TaskList
