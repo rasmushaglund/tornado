@@ -61,6 +61,7 @@ class Tasks(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
             parser.add_argument('name', type=str, help='Name of the task', location='json')
+            parser.add_argument('deleted', type=str, help='If the task is soft deleted', location='json')
             parser.add_argument('lists', type=list, help='Task associated lists', location='json')
             parser.add_argument('tags', type=list, help='Task tags', location='json')
             parser.add_argument('contexts', type=list, help='Task contexts', location='json')
@@ -73,6 +74,7 @@ class Tasks(Resource):
             db.session.query(Task).filter_by(id=id).update(
                 dict(
                     name=args['name'],
+                    deleted=args['deleted'],
                     lists=','.join(str(x) for x in args['lists']),
                     tags=','.join(str(x) for x in args['tags']),
                     contexts=','.join(str(x) for x in args['contexts'])
