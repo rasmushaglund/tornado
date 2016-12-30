@@ -39,10 +39,10 @@ class UpdateTaskDialog extends React.Component {
       contexts: props.task && props.task.contexts || [],
       lists: props.task && props.task.lists || [],
       contextDataSource: _.map(props.contexts, (context) => {
-        return {textKey: context.text, valueKey: context.id}
+        return {textKey: context.name, valueKey: context.id}
       }),
       listDataSource: _.map(props.lists, (list) => {
-        return {textKey: list.text, valueKey: list.id}
+        return {textKey: list.name, valueKey: list.id}
       }),
       tagDataSource: _.map(props.tags, (tag) => {
         return {textKey: tag, valueKey: tag}
@@ -62,7 +62,7 @@ class UpdateTaskDialog extends React.Component {
     this.setState({tags: _.without(this.state.tags, tag)})
   }
 
-  handleContextSelect = (text, index) => {
+  handleContextSelect = (name, index) => {
     if (index >= 0) {
       let context = this.state.contextDataSource[index]
       let newContexts = this.state.contexts.slice()
@@ -71,7 +71,7 @@ class UpdateTaskDialog extends React.Component {
     }
   }
 
-  handleListSelect = (text, index) => {
+  handleListSelect = (name, index) => {
     if (index >= 0) {
       let list = this.state.listDataSource[index]
       let newLists = this.state.lists.slice()
@@ -80,8 +80,8 @@ class UpdateTaskDialog extends React.Component {
     }
   }
 
-  handleTagSelect = (text, index) => {
-    let tag = index < 0 ? text : this.state.tagDataSource[index].valueKey
+  handleTagSelect = (name, index) => {
+    let tag = index < 0 ? name : this.state.tagDataSource[index].valueKey
     let newTags = this.state.tags.slice()
     newTags.push(tag)
     this.setState({tags: newTags})
@@ -112,7 +112,7 @@ class UpdateTaskDialog extends React.Component {
         let context = _.find(contexts, (c) => c.id === contextId)
 
         return context && (
-          <Chip key={context.id} onRequestDelete={() => this.handleContextDelete(contextId)}>{context.text}</Chip>
+          <Chip key={context.id} onRequestDelete={() => this.handleContextDelete(contextId)}>{context.name}</Chip>
         )
     });
 
@@ -121,7 +121,7 @@ class UpdateTaskDialog extends React.Component {
 
         return list && (
           <Chip key={list.id} onRequestDelete={() => this.handleListDelete(listId)}
-            labelStyle={{textDecoration: list.deleted ? 'line-through' : 'none'}}>{list.text}</Chip>
+            labelStyle={{textDecoration: list.deleted ? 'line-through' : 'none'}}>{list.name}</Chip>
         )
     });
 
@@ -141,7 +141,7 @@ class UpdateTaskDialog extends React.Component {
           <div>
             <TextField ref={node => {
               textInput = node
-            }} defaultValue={task && task.text}
+            }} defaultValue={task && task.name}
             hintText="Task name"/>
           </div>
           <div>

@@ -15,7 +15,7 @@ let Lists = ({ lists, dispatch, deletedTasks }) => (
     </UiPaper>
     {lists.map(list =>
       <UiPaper style={{marginBottom: 40}} key={list.id} zDepth={4} >
-        <UiCardHeader title={list.text}
+        <UiCardHeader title={list.name}
           onDoubleClick={() => dispatch(toggleUpdateList(list.id))} />
         <TaskList key={list.id} {...list} />
       </UiPaper>

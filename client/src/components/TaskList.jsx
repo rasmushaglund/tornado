@@ -47,7 +47,7 @@ class Task extends React.Component {
 
     return (
       <UiListItem
-        primaryText={task.text}
+        primaryText={task.name}
         onMouseOver={() => this.setState({hover:true})}
         onMouseLeave={() => this.setState({hover:false})}
         leftIcon={
@@ -80,7 +80,7 @@ TaskList.propTypes = {
   tasks: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     completed: PropTypes.bool.isRequired,
-    text: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired
   }).isRequired),
 }
 

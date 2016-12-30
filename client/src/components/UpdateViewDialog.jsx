@@ -56,7 +56,7 @@ let UpdateViewDialog = ({ visible, view, dispatch }) => {
       <div>
         <TextField ref={node => {
             textInput = node
-          }} hintText="View name" defaultValue={view && view.text} />
+          }} hintText="View name" defaultValue={view && view.name} />
       </div>
       <div>
         <TextField ref={node => {

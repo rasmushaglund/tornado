@@ -5,14 +5,14 @@ const context = (state, action) => {
     case "UPDATE_CONTEXT":
       return {
         ...state,
-        text: action.text
+        name: action.name
       }
     case "ADD_CONTEXT":
-      console.log("Adding context with text " + action.text)
+      console.log("Adding context with text " + action.name)
 
       return {
         id: action.id,
-        text: action.text
+        name: action.name
       }
     case "TOGGLE_DELETE_CONTEXT":
       return {

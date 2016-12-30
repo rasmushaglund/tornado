@@ -16,7 +16,7 @@ let Views = ({ views }) => (
   <div style={viewsStyle}>
     {_.map(views, view =>
       <View key={view.id}
-        text={view.text}
+        text={view.name}
         {...view}
       />
     )}

@@ -5,14 +5,14 @@ const list = (state, action) => {
     case "UPDATE_LIST":
       return {
         ...state,
-        text: action.text
+        name: action.name
       }
     case "ADD_LIST":
-      console.log("Adding list with text " + action.text)
+      console.log("Adding list with name " + action.name)
 
       return {
         id: action.id,
-        text: action.text
+        name: action.name
       }
     case "SOFT_DELETE_LIST":
       return {

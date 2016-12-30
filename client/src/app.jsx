@@ -1,17 +1,27 @@
-import styles from './index.scss';
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux'
+import { fetchTasks, fetchContexts, fetchLists, fetchViews } from './actions'
 import AddTask from './components/AddTask'
 import AddList from './components/AddList'
 import AddView from './components/AddView'
 import Lists from './components/Lists'
-import View from './components/View'
 import Views from './components/Views'
 
 import UiAppBar from 'material-ui/AppBar'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+class App extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  }
+  
+  componentDidMount() {
+    const { dispatch } = this.props
+    dispatch(fetchTasks())
+    //dispatch(fetchContexts)
+    //dispatch(fetchLists)
+    //dispatch(fetchViews)
+  }
 
-export default class App extends React.Component {
   render() {
     return (
       <div className="container">
@@ -26,3 +36,5 @@ export default class App extends React.Component {
     )
   }
 }
+
+export default connect()(App)

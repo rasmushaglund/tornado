@@ -1,7 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import createLogger from 'redux-logger'
 import { AppContainer } from 'react-hot-loader';
 import reducer from './reducers'
 import App from './app.jsx';
@@ -15,7 +17,7 @@ const initialState = {
     0: {
       id: 0,
       completed: false,
-      text: "Diska",
+      name: "Diska",
       deleted: false,
       tags: ["test"],
       lists: [0],
@@ -24,7 +26,7 @@ const initialState = {
     1: {
       id: 1,
       completed: false,
-      text: "Ring försäkringskassan",
+      name: "Ring försäkringskassan",
       tags: [],
       deleted: false,
       lists: [1],
@@ -33,7 +35,7 @@ const initialState = {
     2: {
       id: 2,
       completed: false,
-      text: "Laga punktering",
+      name: "Laga punktering",
       tags: ["test"],
       deleted: false,
       lists: [1],
@@ -42,7 +44,7 @@ const initialState = {
     3: {
       id: 3,
       completed: true,
-      text: "Handla julklappar",
+      name: "Handla julklappar",
       tags: ["test"],
       deleted: false,
       lists: [0],
@@ -51,7 +53,7 @@ const initialState = {
     4: {
       id: 4,
       completed: true,
-      text: "Skotta",
+      name: "Skotta",
       tags: [],
       deleted: false,
       lists: [1],
@@ -60,7 +62,7 @@ const initialState = {
     5: {
       id: 5,
       completed: true,
-      text: "Test",
+      name: "Test",
       tags: ["test"],
       lists: [],
       deleted: false,
@@ -71,51 +73,56 @@ const initialState = {
     {
       id: 0,
       deleted: false,
-      text: "Testlista"
+      name: "Testlista"
     },
     {
       id: 1,
       deleted: false,
-      text: "Hemmafix"
+      name: "Hemmafix"
     }
   ],
   views: [
     {
       id: 0,
       deleted: false,
-      text: "Test",
+      name: "Test",
       filter: "hasTag('test') || hasList('Testlista')"
     },
     {
       id: 1,
       deleted: false,
-      text: "Julfix",
+      name: "Julfix",
       filter: "hasList('Hemmafix')"
     },
     {
       id: 2,
       deleted: false,
-      text: "Default",
+      name: "Default",
       filter: "!hasParent()"
     },
   ],
   contexts: [
     {
       id: 0,
-      text: "dator"
+      name: "dator"
     },
     {
       id: 1,
-      text: "hemma"
+      name: "hemma"
     },
     {
       id: 2,
-      text: "stan"
+      name: "stan"
     }
   ]
 }
 
-const store = createStore(reducer, initialState)
+const middleware = [ thunk ]
+const store = createStore(reducer, initialState, applyMiddleware(...middleware))
+
+if (process.env.NODE_ENV !== 'production') {
+  middleware.push(createLogger())
+}
 
 render(
   <AppContainer>

@@ -4,19 +4,30 @@ let nextListId = 3
 let nextViewId = 3
 let nextContextId = 3
 
-export const addTask = (text, lists, contexts, tags) => ({
+export const receiveTasks = (json) => ({
+  type: 'RECEIVE_TASKS',
+  tasks: json.tasks
+})
+
+export const fetchTasks = () => (dispatch) => {
+  return fetch('http://localhost:5000/tasks')
+    .then(response => response.json())
+    .then(json => dispatch(receiveTasks(json)))
+}
+
+export const addTask = (name, lists, contexts, tags) => ({
   type: 'ADD_TASK',
   id: nextTaskId++,
-  text,
+  name,
   lists,
   contexts,
   tags
 })
 
-export const updateTask = (id, text, lists, contexts, tags) => ({
+export const updateTask = (id, name, lists, contexts, tags) => ({
   type: 'UPDATE_TASK',
   id: id,
-  text,
+  name,
   lists,
   contexts,
   tags
@@ -47,16 +58,16 @@ export const toggleUpdateTask = (task) => ({
 
 
 
-export const addList = (text) => ({
+export const addList = (name) => ({
   type: 'ADD_LIST',
   id: nextListId++,
-  text
+  name
 })
 
-export const updateList = (id, text) => ({
+export const updateList = (id, name) => ({
   type: 'UPDATE_LIST',
   id: id,
-  text
+  name
 })
 
 export const softDeleteList = (id, deleted = true) => ({
@@ -78,16 +89,16 @@ export const toggleUpdateList = (list) => ({
 
 
 
-export const addContext = (text) => ({
+export const addContext = (name) => ({
   type: 'ADD_CONTEXT',
-  id: nextListId++,
-  text
+  id: nextContextId++,
+  name
 })
 
-export const updateContext = (id, text) => ({
+export const updateContext = (id, name) => ({
   type: 'UPDATE_CONTEXT',
   id: id,
-  text
+  name
 })
 
 export const softDeleteContext = (id, deleted = true) => ({
@@ -110,17 +121,17 @@ export const toggleUpdateContext = (list) => ({
 
 
 
-export const addView = (text, filter) => ({
+export const addView = (name, filter) => ({
   type: 'ADD_VIEW',
   id: nextViewId++,
-  text,
+  name,
   filter
 })
 
-export const updateView = (id, text, filter) => ({
+export const updateView = (id, name, filter) => ({
   type: 'UPDATE_VIEW',
   id: id,
-  text,
+  name,
   filter
 })
 

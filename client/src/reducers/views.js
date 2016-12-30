@@ -5,15 +5,15 @@ const view = (state, action) => {
     case "UPDATE_VIEW":
       return {
         ...state,
-        text: action.text,
+        name: action.name,
         filter: action.filter
       }
     case "ADD_VIEW":
-      console.log("Adding view with text " + action.text + " and filter " + action.filter)
+      console.log("Adding view with text " + action.name + " and filter " + action.filter)
 
       return {
         id: action.id,
-        text: action.text,
+        name: action.name,
         filter: action.filter
       }
     case "SOFT_DELETE_VIEW":

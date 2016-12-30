@@ -53,7 +53,7 @@ let UpdateListDialog = ({ visible, list, dispatch }) => {
       }}>
         <input ref={node => {
             input = node
-          }} defaultValue={list && list.text} />
+          }} defaultValue={list && list.name} />
         <FlatButton
           label="Cancel"
           onTouchTap={closeDialog}

@@ -6,7 +6,7 @@ const task = (state, action) => {
     case "UPDATE_TASK":
       return {
         ...state,
-        text: action.text,
+        name: action.name,
         lists: action.lists,
         tags: action.tags,
         contexts: action.contexts
@@ -16,7 +16,7 @@ const task = (state, action) => {
         ...state,
         id: action.id,
         completed: false,
-        text: action.text,
+        name: action.name,
         lists: action.lists,
         tags: action.tags,
         contexts: action.contexts
@@ -47,11 +47,15 @@ const tasks = (state = [], action) => {
         task.id !== action.id
       )
   } else if (action.type === 'DELETE_LIST') {
-    let a = _.mapObject(state, (task, key) => {
+    return _.mapObject(state, (task, key) => {
       return Object.assign({}, task, {lists: _.without(task.lists, action.id)})
     })
+  } else if (action.type === 'RECEIVE_TASKS') {
+    return _.map(action.tasks, data => {
+      return task(data, 'ADD_TASK')
+    })
 
-    return a
+
   } else {
     return state
   }
