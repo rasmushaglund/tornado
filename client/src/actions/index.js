@@ -1,8 +1,15 @@
-// TODO: change this when mock is removed
-let nextTaskId = 6
-let nextListId = 3
-let nextViewId = 3
-let nextContextId = 3
+const uuidV4 = require('uuid/v4')
+
+const jsonFetch = (data, url, method = 'POST') => {
+  return fetch(url, {
+    method: method, 
+    body: JSON.stringify(data), 
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+}
 
 export const receiveTasks = (json) => ({
   type: 'RECEIVE_TASKS',
@@ -15,40 +22,96 @@ export const fetchTasks = () => (dispatch) => {
     .then(json => dispatch(receiveTasks(json)))
 }
 
-export const addTask = (name, lists, contexts, tags) => ({
-  type: 'ADD_TASK',
-  id: nextTaskId++,
-  name,
-  lists,
-  contexts,
-  tags
-})
+export const addTask = (name, lists, contexts, tags) => {
+  const id = uuidV4()
 
-export const updateTask = (id, name, lists, contexts, tags) => ({
-  type: 'UPDATE_TASK',
-  id: id,
-  name,
-  lists,
-  contexts,
-  tags
-})
+  jsonFetch({
+      id: id,
+      name: name,
+      lists: lists,
+      contexts: contexts,
+      tags: tags
+    },
+    'http://localhost:5000/tasks'
+  )
 
-export const softDeleteTask = (id, deleted = true) => ({
-  type: 'SOFT_DELETE_TASK',
-  id,
-  deleted
-})
+  return {
+    type: 'ADD_TASK',
+    id: id,
+    name,
+    lists,
+    contexts,
+    tags
+  }
+}
 
-export const deleteTask = (id) => ({
-  type: 'DELETE_TASK',
-  id
-})
+export const updateTask = (id, name, lists, contexts, tags) => {
+  jsonFetch({
+      id: id,
+      name: name,
+      lists: lists,
+      contexts: contexts,
+      tags: tags
+    },
+    'http://localhost:5000/tasks',
+    'PUT'
+  )
 
-export const toggleTask = (id, completed) => ({
-  type: 'TOGGLE_TASK',
-  id,
-  completed
-})
+  return {
+    type: 'UPDATE_TASK',
+    id: id,
+    name,
+    lists,
+    contexts,
+    tags
+  }
+}
+
+export const softDeleteTask = (id, deleted = true) => { 
+  jsonFetch({
+      id: id,
+      deleted: deleted
+    },
+    'http://localhost:5000/tasks',
+    'PUT'
+  )
+
+  return {
+    type: 'SOFT_DELETE_TASK',
+    id,
+    deleted
+  }
+}
+
+export const deleteTask = (id) => {
+  jsonFetch({
+      id: id
+    },
+    'http://localhost:5000/tasks',
+    'DELETE'
+  )
+
+  return {
+    type: 'DELETE_TASK',
+    id
+  }
+}
+
+export const toggleTask = (id, completed) => {
+  jsonFetch({
+      id: id,
+      completed: completed
+    },
+    'http://localhost:5000/tasks',
+    'PUT'
+  )
+
+  return {
+    type: 'TOGGLE_TASK',
+    id,
+    completed
+  }
+}
 
 export const toggleUpdateTask = (task) => ({
   type: 'TOGGLE_EDIT_TASK',
@@ -58,28 +121,79 @@ export const toggleUpdateTask = (task) => ({
 
 
 
-export const addList = (name) => ({
-  type: 'ADD_LIST',
-  id: nextListId++,
-  name
+export const receiveLists = (json) => ({
+  type: 'RECEIVE_LISTS',
+  lists: json.lists
 })
 
-export const updateList = (id, name) => ({
-  type: 'UPDATE_LIST',
-  id: id,
-  name
-})
+export const fetchLists = () => (dispatch) => {
+  return fetch('http://localhost:5000/lists')
+    .then(response => response.json())
+    .then(json => dispatch(receiveLists(json)))
+}
 
-export const softDeleteList = (id, deleted = true) => ({
-  type: 'SOFT_DELETE_LIST',
-  id,
-  deleted
-})
+export const addList = (name) => {
+  const id = uuidV4()
+  
+  jsonFetch({
+      id: id,
+      name: name
+    },
+    'http://localhost:5000/lists'
+  )
 
-export const deleteList = (id) => ({
-  type: 'DELETE_LIST',
-  id
-})
+  return {
+    type: 'ADD_LIST',
+    id: id,
+    name
+  }
+}
+
+export const updateList = (id, name) => {
+  jsonFetch({
+      id: id,
+      name: name
+    },
+    'http://localhost:5000/lists',
+    'PUT'
+  )
+
+  return {
+    type: 'UPDATE_LIST',
+    id: id,
+    name
+  }
+}
+
+export const softDeleteList = (id, deleted = true) => {
+  jsonFetch({
+      id: id,
+      deleted: deleted
+    },
+    'http://localhost:5000/lists',
+    'PUT'
+  )
+
+  return {
+    type: 'SOFT_DELETE_LIST',
+    id,
+    deleted
+  }
+}
+
+export const deleteList = (id) => {
+  jsonFetch({
+      id: id
+    },
+    'http://localhost:5000/lists',
+    'DELETE'
+  )
+
+  return {
+    type: 'DELETE_LIST',
+    id
+  }
+}
 
 export const toggleUpdateList = (list) => ({
   type: 'TOGGLE_EDIT_LIST',
@@ -89,28 +203,79 @@ export const toggleUpdateList = (list) => ({
 
 
 
-export const addContext = (name) => ({
-  type: 'ADD_CONTEXT',
-  id: nextContextId++,
-  name
+export const receiveContexts = (json) => ({
+  type: 'RECEIVE_CONTEXTS',
+  contexts: json.contexts
 })
 
-export const updateContext = (id, name) => ({
-  type: 'UPDATE_CONTEXT',
-  id: id,
-  name
-})
+export const fetchContexts = () => (dispatch) => {
+  return fetch('http://localhost:5000/contexts')
+    .then(response => response.json())
+    .then(json => dispatch(receiveContexts(json)))
+}
 
-export const softDeleteContext = (id, deleted = true) => ({
-  type: 'SOFT_DELETE_CONTEXT',
-  id,
-  deleted
-})
+export const addContext = (name) => {
+  const id = uuidV4()
+  
+  jsonFetch({
+      id: id,
+      name: name
+    },
+    'http://localhost:5000/contexts'
+  )
 
-export const deleteContext = (id) => ({
-  type: 'DELETE_CONTEXT',
-  id
-})
+  return {
+    type: 'ADD_CONTEXT',
+    id: id,
+    name
+  }
+}
+
+export const updateContext = (id, name) => {
+  jsonFetch({
+      id: id,
+      name: name
+    },
+    'http://localhost:5000/contexts',
+    'PUT'
+  )
+
+  return {
+    type: 'UPDATE_CONTEXT',
+    id: id,
+    name
+  }
+}
+
+export const softDeleteContext = (id, deleted = true) => {
+  jsonFetch({
+      id: id,
+      deleted: deleted
+    },
+    'http://localhost:5000/contexts',
+    'PUT'
+  )
+
+  return {
+    type: 'SOFT_DELETE_CONTEXT',
+    id,
+    deleted
+  }
+}
+
+export const deleteContext = (id) => {
+  jsonFetch({
+      id: id
+    },
+    'http://localhost:5000/contexts',
+    'DELETE'
+  )
+
+  return {
+    type: 'DELETE_CONTEXT',
+    id
+  }
+}
 
 export const toggleUpdateContext = (list) => ({
   type: 'TOGGLE_EDIT_CONTEXT',
@@ -120,31 +285,83 @@ export const toggleUpdateContext = (list) => ({
 
 
 
-
-export const addView = (name, filter) => ({
-  type: 'ADD_VIEW',
-  id: nextViewId++,
-  name,
-  filter
+export const receiveViews = (json) => ({
+  type: 'RECEIVE_VIEWS',
+  views: json.views
 })
 
-export const updateView = (id, name, filter) => ({
-  type: 'UPDATE_VIEW',
-  id: id,
-  name,
-  filter
-})
+export const fetchViews = () => (dispatch) => {
+  return fetch('http://localhost:5000/views')
+    .then(response => response.json())
+    .then(json => dispatch(receiveViews(json)))
+}
 
-export const softDeleteView = (id, deleted = true) => ({
-  type: 'SOFT_DELETE_VIEW',
-  id,
-  deleted
-})
+export const addView = (name, filter) => {
+  const id = uuidV4()
+  
+  jsonFetch({
+      id: id,
+      name: name,
+      filter: filter
+    },
+    'http://localhost:5000/filters'
+  )
 
-export const deleteView = (id) => ({
-  type: 'DELETE_VIEW',
-  id
-})
+  return {
+    type: 'ADD_VIEW',
+    id: id,
+    name,
+    filter
+  }
+}
+
+export const updateView = (id, name, filter) => {
+  jsonFetch({
+      id: id,
+      name: name,
+      filter: filter
+    },
+    'http://localhost:5000/views',
+    'PUT'
+  )
+
+  return {
+    type: 'UPDATE_VIEW',
+    id: id,
+    name,
+    filter
+  }
+}
+
+export const softDeleteView = (id, deleted = true) => {
+  jsonFetch({
+      id: id,
+      deleted: deleted
+    },
+    'http://localhost:5000/views',
+    'PUT'
+  )
+  
+  return {
+    type: 'SOFT_DELETE_VIEW',
+    id,
+    deleted
+  }
+}
+
+export const deleteView = (id) => {
+  jsonFetch({
+      id: id
+    },
+    'http://localhost:5000/views',
+    'DELETE'
+  )
+
+  return {
+    type: 'DELETE_VIEW',
+    id
+  }
+}
 
 export const toggleUpdateView = (view) => ({
   type: 'TOGGLE_EDIT_VIEW',

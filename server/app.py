@@ -1,4 +1,5 @@
 from util import db, app, api
+from flask_restful.utils import cors
 from views.tasks import Tasks
 from views.views import Views
 from views.lists import Lists
@@ -23,6 +24,15 @@ def add_cors_header(response):
     return response
 
 app.after_request(add_cors_header)
+
+api.decorators = [
+    cors.crossdomain(
+        origin='*',
+        methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+        attach_to_all = True,
+        automatic_options = True
+    )
+]
 
 if __name__ == "__main__":
     app.debug = True

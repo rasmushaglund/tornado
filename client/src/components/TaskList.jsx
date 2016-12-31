@@ -78,7 +78,7 @@ let TaskList = ({ tasks, toggleTask, toggleUpdateTask, deleteTask, softDeleteTas
 
 TaskList.propTypes = {
   tasks: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     completed: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired),

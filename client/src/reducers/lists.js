@@ -34,6 +34,10 @@ const lists = (state = [], action) => {
     return _.filter(state, list =>
         list.id !== action.id
       )
+  } else if (action.type === 'RECEIVE_LISTS') {
+    return _.map(action.lists, data => {
+      return list(data, 'ADD_LIST')
+    })
   } else {
       return state
   }

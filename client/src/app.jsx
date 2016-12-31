@@ -17,9 +17,9 @@ class App extends React.Component {
   componentDidMount() {
     const { dispatch } = this.props
     dispatch(fetchTasks())
-    //dispatch(fetchContexts)
-    //dispatch(fetchLists)
-    //dispatch(fetchViews)
+    dispatch(fetchContexts())
+    dispatch(fetchLists())
+    dispatch(fetchViews())
   }
 
   render() {

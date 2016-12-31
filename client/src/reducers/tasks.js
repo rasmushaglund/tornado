@@ -51,11 +51,9 @@ const tasks = (state = [], action) => {
       return Object.assign({}, task, {lists: _.without(task.lists, action.id)})
     })
   } else if (action.type === 'RECEIVE_TASKS') {
-    return _.map(action.tasks, data => {
-      return task(data, 'ADD_TASK')
-    })
-
-
+    return _.object(_.map(action.tasks, data => {
+      return [data.id, task(data, 'ADD_TASK')]
+    }))
   } else {
     return state
   }

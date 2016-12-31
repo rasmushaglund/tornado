@@ -38,12 +38,15 @@ class Task(db.Model):
         else:
             tags = None
 
+        print self.id
+        print self.deleted
+        print self.completed
         return {
-            'id': int(self.id),
-            'lists': [int(l) for l in lists],
-            'contexts': [int(c) for c in contexts],
+            'id': self.id,
+            'lists': lists,
+            'contexts': contexts,
             'tags': tags,
-            'completed': self.completed == "true",
+            'completed': self.completed,
             'name': self.name,
-            'deleted': self.deleted == "true"
+            'deleted': self.deleted
         }
