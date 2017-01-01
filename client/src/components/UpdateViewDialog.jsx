@@ -38,20 +38,20 @@ let UpdateViewDialog = ({ visible, view, dispatch }) => {
         autoScrollBodyContent={true} >
       <form onSubmit={e => {
           e.preventDefault()
-          if (!textInput.value.trim()) {
+          if (!textInput.input.value.trim()) {
             return
           }
 
           if (view) {
-            dispatch(updateView(view.id, textInput.value, filterInput.value))
+            dispatch(updateView(view.id, textInput.input.value, filterInput.input.value))
           } else {
-            dispatch(addView(textInput.value, filterInput.value))
+            dispatch(addView(textInput.input.value, filterInput.input.value))
           }
 
           closeDialog()
 
-          textInput.value = ''
-          filterInput.value = ''
+          textInput.input.value = ''
+          filterInput.input.value = ''
       }}>
       <div>
         <TextField ref={node => {

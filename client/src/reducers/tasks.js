@@ -7,6 +7,7 @@ const task = (state, action) => {
       return {
         ...state,
         name: action.name,
+        description: action.description,
         lists: action.lists,
         tags: action.tags,
         contexts: action.contexts
@@ -17,6 +18,7 @@ const task = (state, action) => {
         id: action.id,
         completed: false,
         name: action.name,
+        description: action.description,
         lists: action.lists,
         tags: action.tags,
         contexts: action.contexts

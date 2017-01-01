@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
 
-from util import db
+from util import db, app
 from models.list import List
 
 
@@ -12,6 +12,7 @@ class Lists(Resource):
             return jsonify(lists=[t.serialize() for t in lists])
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def post(self):
@@ -32,6 +33,7 @@ class Lists(Resource):
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def delete(self):
@@ -48,6 +50,7 @@ class Lists(Resource):
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def put(self):
@@ -74,4 +77,5 @@ class Lists(Resource):
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}

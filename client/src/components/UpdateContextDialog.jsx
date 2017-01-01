@@ -4,25 +4,25 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import { connect } from 'react-redux'
-import { addList, updateList, softDeleteList, toggleUpdateList } from '../actions'
+import { addContext, updateContext, softDeleteContext, toggleUpdateContext } from '../actions'
 
-class UpdateListDialog extends React.Component {
+class UpdateContextDialog extends React.Component {
  
   render () {
-    let { visible, list, dispatch } = this.props
+    let { visible, context, dispatch } = this.props
     let textInput
 
     let closeDialog = () =>  {
-      dispatch(toggleUpdateList(false))
+      dispatch(toggleUpdateContext(false))
     }
 
-    let label = list ? "Edit List" : "Add List"
+    let label = context ? "Edit Context" : "Add Context"
 
-    let deleteButton = list ? (
+    let deleteButton = context ? (
       <FlatButton
         label="Delete"
         onTouchTap={() => {
-          dispatch(softDeleteList(list.id))
+          dispatch(softDeleteContext(context.id))
           closeDialog()
         }}
         secondary={true}
@@ -42,10 +42,10 @@ class UpdateListDialog extends React.Component {
             return
           }
 
-          if (list) {
-            dispatch(updateList(list.id, textInput.value))
+          if (context) {
+            dispatch(updateContext(context.id, textInput.value))
           } else {
-            dispatch(addList(textInput.value))
+            dispatch(addContext(textInput.value))
           }
 
           closeDialog()
@@ -54,13 +54,13 @@ class UpdateListDialog extends React.Component {
         }}>
           <input ref={node => {
             textInput = node
-            }} defaultValue={list && list.name} />
+            }} defaultValue={context && context.name} />
           <FlatButton
             label="Cancel"
             onTouchTap={closeDialog}
           />
           <FlatButton
-            label={list ? "Update" : "Add"}
+            label={context ? "Update" : "Add"}
             type="submit"
             primary={true}
             keyboardFocused={true}
@@ -72,6 +72,6 @@ class UpdateListDialog extends React.Component {
   }
 }
 
-UpdateListDialog = connect()(UpdateListDialog)
+UpdateContextDialog = connect()(UpdateContextDialog)
 
-export default UpdateListDialog
+export default UpdateContextDialog

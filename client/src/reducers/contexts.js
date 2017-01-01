@@ -30,8 +30,12 @@ const contexts = (state = [], action) => {
   if (_.contains(actions, action.type)) {
     return {
       ...state,
-      [action.id]: list(state[action.id], action)
+      [action.id]: context(state[action.id], action)
     }
+  } else if (action.type === 'RECEIVE_CONTEXTS') {
+    return _.object(_.map(action.contexts, data => {
+      return [data.id, context(data, 'ADD_CONTEXT')]
+    }))
   } else {
       return state
   }

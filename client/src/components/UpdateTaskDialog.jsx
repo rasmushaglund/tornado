@@ -11,7 +11,7 @@ import Chip from 'material-ui/Chip';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import { connect } from 'react-redux'
-import { addTask, updateTask, toggleDeleteTask, toggleUpdateTask } from '../actions'
+import { addTask, addContext, updateTask, toggleDeleteTask, toggleUpdateTask } from '../actions'
 
 const dataSourceConfig = {
   text: 'textKey',
@@ -34,9 +34,11 @@ class UpdateTaskDialog extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    this.setState({
+    let contexts = this.state.contexts || props.task && props.task.contexts || []
+    this.setState((prevState, props) => {
+      return {
       tags: props.task && props.task.tags || [],
-      contexts: props.task && props.task.contexts || [],
+        contexts: prevState.contexts || props.task && props.task.contexts || [], 
       lists: props.task && props.task.lists || [],
       contextDataSource: _.map(props.contexts, (context) => {
         return {textKey: context.name, valueKey: context.id}
@@ -47,18 +49,19 @@ class UpdateTaskDialog extends React.Component {
       tagDataSource: _.map(props.tags, (tag) => {
         return {textKey: tag, valueKey: tag}
       })
+      }
     })
   }
 
-  handleListDelete (id, input) {
+  handleListDelete = (id, input) => {
     this.setState({lists: _.without(this.state.lists, id)})
   }
 
-  handleContextDelete (id) {
+  handleContextDelete = (id) => {
     this.setState({contexts: _.without(this.state.contexts, id)})
   }
 
-  handleTagDelete (tag) {
+  handleTagDelete = (tag) => {
     this.setState({tags: _.without(this.state.tags, tag)})
   }
 
@@ -87,9 +90,22 @@ class UpdateTaskDialog extends React.Component {
     this.setState({tags: newTags})
   }
 
+
+  handleContextInput = (s) => {
+    let parts = s.split(",")
+
+    if (parts.length > 1) {
+      let newContexts = this.state.contexts.slice()
+      let newContext = addContext(parts[0].trim())
+      newContexts.push(newContext.id)
+      this.props.dispatch(newContext)
+      this.setState({contexts: newContexts})
+      this.contextInput.refs.searchTextField.input.value = ''
+    }
+  }
+
   render () {
     let {task, visible, contexts, lists, tags, dispatch} = this.props
-    let textInput, tagInput, contextInput, listInput
 
     let closeDialog = () =>  {
       dispatch(toggleUpdateTask(false))
@@ -140,15 +156,22 @@ class UpdateTaskDialog extends React.Component {
           autoScrollBodyContent={true} >
           <div>
             <TextField ref={node => {
-              textInput = node
+              this.textInput = node
             }} defaultValue={task && task.name}
             hintText="Task name"/>
           </div>
           <div>
+            <TextField ref={node => {
+              this.descriptionInput = node
+            }} defaultValue={task && task.description}
+            hintText="Task description"/>
+          </div>
+          <div>
             <AutoComplete ref={node => {
-              tagInput = node
+              this.tagInput = node
             }} hintText="Add tag" onNewRequest={this.handleTagSelect}
             openOnFocus={true}
+            onUpdateInput={this.handleTagInput}
             filter={AutoComplete.fuzzyFilter}
             dataSourceConfig={dataSourceConfig}
             dataSource={this.state.tagDataSource} />
@@ -156,9 +179,10 @@ class UpdateTaskDialog extends React.Component {
           </div>
           <div>
             <AutoComplete ref={node => {
-              contextInput = node
+              this.contextInput = node
             }} hintText="Add context" onNewRequest={this.handleContextSelect}
             openOnFocus={true}
+            onUpdateInput={this.handleContextInput}
             filter={AutoComplete.fuzzyFilter}
             dataSourceConfig={dataSourceConfig}
             dataSource={this.state.contextDataSource} />
@@ -166,9 +190,10 @@ class UpdateTaskDialog extends React.Component {
           </div>
           <div>
             <AutoComplete ref={node => {
-              listInput = node
+              this.listInput = node
             }} hintText="Add list" onNewRequest={this.handleListSelect}
             openOnFocus={true}
+            onUpdateInput={this.handleListInput}
             filter={AutoComplete.fuzzyFilter}
             dataSourceConfig={dataSourceConfig}
             dataSource={this.state.listDataSource} />
@@ -177,19 +202,22 @@ class UpdateTaskDialog extends React.Component {
 
         <form onSubmit={e => {
             e.preventDefault()
-            if (!textInput.input.value.trim()) {
+            if (!this.textInput.input.value.trim()) {
               return
             }
 
             if (task) {
-              dispatch(updateTask(task.id, textInput.input.value, this.state.lists, this.state.contexts, this.state.tags))
+              dispatch(updateTask(task.id, this.textInput.input.value, this.descriptionInput.input.value, this.state.lists, this.state.contexts, this.state.tags))
             } else {
-              dispatch(addTask(textInput.input.value, this.state.lists, this.state.contexts, this.state.tags))
+              dispatch(addTask(this.textInput.input.value, this.descriptionInput.input.value, this.state.lists, this.state.contexts, this.state.tags))
             }
 
             closeDialog()
 
-            textInput.input.value = ''
+          this.textInput.input.value = ''
+          this.tagInput.refs.searchTextField.input.value = ''
+          this.contextInput.refs.searchTextField.input.value = ''
+          this.listInput.refs.searchTextField.input.value = ''
         }}>
           <FlatButton
             label="Cancel"
@@ -215,7 +243,7 @@ const mapStateToProps = (state) => ({
 })
 
 UpdateTaskDialog = connect(
-  mapStateToProps,
+  mapStateToProps
 )(UpdateTaskDialog)
 
 UpdateTaskDialog = connect()(UpdateTaskDialog)

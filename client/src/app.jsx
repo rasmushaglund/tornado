@@ -4,6 +4,7 @@ import { fetchTasks, fetchContexts, fetchLists, fetchViews } from './actions'
 import AddTask from './components/AddTask'
 import AddList from './components/AddList'
 import AddView from './components/AddView'
+import AddContext from './components/AddContext'
 import Lists from './components/Lists'
 import Views from './components/Views'
 
@@ -13,7 +14,7 @@ class App extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   }
-  
+
   componentDidMount() {
     const { dispatch } = this.props
     dispatch(fetchTasks())
@@ -25,13 +26,14 @@ class App extends React.Component {
   render() {
     return (
       <div className="container">
-        <UiAppBar title="t[x]rnado"
-          iconClassNameRight="muidocs-icon-navigation-expand-more" />
-        <AddView />
-        <AddList />
-        <AddTask />
-        <Views />
-        <Lists />
+      <UiAppBar title="t[x]rnado"
+        iconClassNameRight="muidocs-icon-navigation-expand-more" />
+      <AddView />
+      <AddList />
+      <AddTask />
+      <AddContext />
+      <Views />
+      <Lists />
       </div>
     )
   }

@@ -11,6 +11,6 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 api = Api(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.sqlite3'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://root:rasse@localhost/tornado'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.sqlite3'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:rasse@localhost/tornado'
 db = SQLAlchemy(app)

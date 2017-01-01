@@ -12,6 +12,7 @@ class Tasks(Resource):
             return jsonify(tasks=[t.serialize() for t in tasks])
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def post(self):
@@ -19,6 +20,7 @@ class Tasks(Resource):
             # Parse the arguments
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
+            parser.add_argument('description', type=str, help='Description of the task', location='json')
             parser.add_argument('name', type=str, help='Name of the task', location='json')
             parser.add_argument('lists', type=list, help='Task associated lists', location='json')
             parser.add_argument('tags', type=list, help='Task tags', location='json')
@@ -29,17 +31,19 @@ class Tasks(Resource):
 
             id = args['id']
             name = args['name']
+            description = args['description']
             lists = ','.join(str(x) for x in args['lists'])
             tags = ','.join(str(x) for x in args['tags'])
             contexts = ','.join(str(x) for x in args['contexts'])
 
-            new_task = Task(id, lists, contexts, tags, False, name, False)
+            new_task = Task(id, lists, contexts, tags, False, name, False, None, description, None, None, None)
             db.session.add(new_task)
             db.session.commit()
 
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def delete(self):
@@ -58,6 +62,7 @@ class Tasks(Resource):
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def put(self):
@@ -65,6 +70,7 @@ class Tasks(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
             parser.add_argument('name', type=str, help='Name of the task', location='json')
+            parser.add_argument('description', type=str, help='Description of the task', location='json')
             parser.add_argument('completed', type=bool, help='If the task is completed', location='json')
             parser.add_argument('deleted', type=bool, help='If the task is soft deleted', location='json')
             parser.add_argument('lists', type=list, help='Task associated lists', location='json')
@@ -82,6 +88,8 @@ class Tasks(Resource):
 
             if args['name'] is not None:
                 values['name'] = args['name']
+            if args['description'] is not None:
+                values['description'] = args['description']
             if args['completed'] is not None:
                 values['completed'] = args['completed']
             if args['deleted'] is not None:

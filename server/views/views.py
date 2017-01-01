@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
 
-from util import db
+from util import db, app
 from models.view import View
 
 
@@ -12,6 +12,7 @@ class Views(Resource):
             return jsonify(views=[t.serialize() for t in views])
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def post(self):
@@ -34,6 +35,7 @@ class Views(Resource):
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def delete(self):
@@ -50,6 +52,7 @@ class Views(Resource):
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}
 
     def put(self):
@@ -78,4 +81,5 @@ class Views(Resource):
             return {'status': 'ok'}
 
         except Exception as e:
+            app.logger.error(e)
             return {'error': str(e)}

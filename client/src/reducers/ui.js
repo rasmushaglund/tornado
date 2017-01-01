@@ -1,7 +1,8 @@
 const initialState = {
   editViewVisible: false,
   editTaskVisible: false,
-  editListVisible: false
+  editListVisible: false,
+  editContextVisible: false
 }
 
 const ui = (state = initialState, action) => {
@@ -23,6 +24,12 @@ const ui = (state = initialState, action) => {
         ...state,
         editListVisible: !state.editListVisible,
         currentList: action.list
+      }
+    case "TOGGLE_EDIT_CONTEXT":
+      return {
+        ...state,
+        editContextVisible: !state.editContextVisible,
+        currentContext: action.context
       }
     default:
       return state

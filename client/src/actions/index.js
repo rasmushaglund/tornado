@@ -22,12 +22,13 @@ export const fetchTasks = () => (dispatch) => {
     .then(json => dispatch(receiveTasks(json)))
 }
 
-export const addTask = (name, lists, contexts, tags) => {
+export const addTask = (name, description, lists, contexts, tags) => {
   const id = uuidV4()
 
   jsonFetch({
       id: id,
       name: name,
+      description: description,
       lists: lists,
       contexts: contexts,
       tags: tags
@@ -39,17 +40,19 @@ export const addTask = (name, lists, contexts, tags) => {
     type: 'ADD_TASK',
     id: id,
     name,
+    description, 
     lists,
     contexts,
     tags
   }
 }
 
-export const updateTask = (id, name, lists, contexts, tags) => {
+export const updateTask = (id, name, description, lists, contexts, tags) => {
   jsonFetch({
       id: id,
       name: name,
       lists: lists,
+      description: description,
       contexts: contexts,
       tags: tags
     },
@@ -61,6 +64,7 @@ export const updateTask = (id, name, lists, contexts, tags) => {
     type: 'UPDATE_TASK',
     id: id,
     name,
+    description,
     lists,
     contexts,
     tags
@@ -277,9 +281,9 @@ export const deleteContext = (id) => {
   }
 }
 
-export const toggleUpdateContext = (list) => ({
+export const toggleUpdateContext = (context) => ({
   type: 'TOGGLE_EDIT_CONTEXT',
-  list
+  context
 })
 
 
@@ -304,7 +308,7 @@ export const addView = (name, filter) => {
       name: name,
       filter: filter
     },
-    'http://localhost:5000/filters'
+    'http://localhost:5000/views'
   )
 
   return {
