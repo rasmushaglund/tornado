@@ -29,16 +29,26 @@ class UpdateTaskDialog extends React.Component {
       lists: [],
       contextDataSource: [],
       listDataSource: [],
-      tagDataSource: []
+      tagDataSource: [],
+      contextSearchText: '',
+      listSearchText: '',
+      tagSearchText: ''
     }
   }
 
   componentWillReceiveProps (props) {
-    let contexts = this.state.contexts || props.task && props.task.contexts || []
+    let contexts 
+    if (!this.props.task || props.task && props.task.id !== this.props.task.id) {
+      contexts = props.task && props.task.contexts || []
+    } else {
+      contexts = this.state.contexts
+    }
+
+    //let contexts = this.state.contexts || props.task && props.task.contexts || []
     this.setState((prevState, props) => {
       return {
       tags: props.task && props.task.tags || [],
-        contexts: prevState.contexts || props.task && props.task.contexts || [], 
+      contexts: prevState.contexts.length > 0 && prevState.contexts || contexts, 
       lists: props.task && props.task.lists || [],
       contextDataSource: _.map(props.contexts, (context) => {
         return {textKey: context.name, valueKey: context.id}
@@ -70,7 +80,7 @@ class UpdateTaskDialog extends React.Component {
       let context = this.state.contextDataSource[index]
       let newContexts = this.state.contexts.slice()
       newContexts.push(context.valueKey)
-      this.setState({contexts: newContexts})
+      this.setState({contexts: newContexts, contextSearchText: ''})
     }
   }
 
@@ -95,12 +105,23 @@ class UpdateTaskDialog extends React.Component {
     let parts = s.split(",")
 
     if (parts.length > 1) {
+      let newContext
       let newContexts = this.state.contexts.slice()
-      let newContext = addContext(parts[0].trim())
+      let contextString = parts[0].trim()
+      let existingContext = _.find(this.state.contextDataSource, (context) => context.textKey === contextString)
+
+      if (existingContext) {
+        newContext = {id: existingContext.valueKey}
+      } else {
+        newContext = addContext(contextString)
+        this.props.dispatch(newContext)
+      }
+
       newContexts.push(newContext.id)
-      this.props.dispatch(newContext)
-      this.setState({contexts: newContexts})
+      this.setState({contexts: newContexts, contextSearchText: ''})
       this.contextInput.refs.searchTextField.input.value = ''
+    } else {
+      this.setState({contextSearchText: s})
     }
   }
 
@@ -172,6 +193,7 @@ class UpdateTaskDialog extends React.Component {
             }} hintText="Add tag" onNewRequest={this.handleTagSelect}
             openOnFocus={true}
             onUpdateInput={this.handleTagInput}
+            searchText={this.state.tagSearchText}
             filter={AutoComplete.fuzzyFilter}
             dataSourceConfig={dataSourceConfig}
             dataSource={this.state.tagDataSource} />
@@ -183,6 +205,7 @@ class UpdateTaskDialog extends React.Component {
             }} hintText="Add context" onNewRequest={this.handleContextSelect}
             openOnFocus={true}
             onUpdateInput={this.handleContextInput}
+            searchText={this.state.contextSearchText}
             filter={AutoComplete.fuzzyFilter}
             dataSourceConfig={dataSourceConfig}
             dataSource={this.state.contextDataSource} />
@@ -194,6 +217,7 @@ class UpdateTaskDialog extends React.Component {
             }} hintText="Add list" onNewRequest={this.handleListSelect}
             openOnFocus={true}
             onUpdateInput={this.handleListInput}
+            searchText={this.state.listSearchText}
             filter={AutoComplete.fuzzyFilter}
             dataSourceConfig={dataSourceConfig}
             dataSource={this.state.listDataSource} />
