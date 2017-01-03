@@ -1,8 +1,8 @@
 from util import db
 
 
-class Context(db.Model):
-    __tablename__ = "contexts"
+class Tag(db.Model):
+    __tablename__ = "tags"
 
     id = db.Column(db.String(45), primary_key=True)
     name = db.Column(db.String(200))

@@ -17,11 +17,12 @@ let AddView = ({ dialogVisible, currentView, dispatch }) => {
   }
 
   let label = currentView ? "Edit View" : "Add View"
+  let dialog = dialogVisible ? <UpdateViewDialog view={currentView} /> : null
 
   return (
     <div>
       <RaisedButton label={label} onTouchTap={openDialog} />
-      <UpdateViewDialog visible={dialogVisible} view={currentView} />
+      {dialog}
     </div>
   )
 }

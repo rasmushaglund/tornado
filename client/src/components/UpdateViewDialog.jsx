@@ -9,8 +9,15 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux'
 import { addView, updateView, toggleUpdateView, softDeleteView } from '../actions'
 
-let UpdateViewDialog = ({ visible, view, dispatch }) => {
-  let filterInput, textInput
+class UpdateViewDialog extends React.Component {
+  componentDidMount () {
+    this.textInput.focus()
+  }
+
+  render () {
+  let { view, dispatch } = this.props
+
+  let filterInput
 
   let closeDialog = () =>  {
     dispatch(toggleUpdateView(false))
@@ -33,29 +40,29 @@ let UpdateViewDialog = ({ visible, view, dispatch }) => {
     <Dialog
         title={label}
         modal={false}
-        open={visible}
+        open={true}
         onRequestClose={closeDialog}
         autoScrollBodyContent={true} >
       <form onSubmit={e => {
           e.preventDefault()
-          if (!textInput.input.value.trim()) {
+          if (!this.textInput.input.value.trim()) {
             return
           }
 
           if (view) {
-            dispatch(updateView(view.id, textInput.input.value, filterInput.input.value))
+            dispatch(updateView(view.id, this.textInput.input.value, filterInput.input.value))
           } else {
-            dispatch(addView(textInput.input.value, filterInput.input.value))
+            dispatch(addView(this.textInput.input.value, filterInput.input.value))
           }
 
           closeDialog()
 
-          textInput.input.value = ''
+          this.textInput.input.value = ''
           filterInput.input.value = ''
       }}>
       <div>
         <TextField ref={node => {
-            textInput = node
+            this.textInput = node
           }} hintText="View name" defaultValue={view && view.name} />
       </div>
       <div>
@@ -78,6 +85,7 @@ let UpdateViewDialog = ({ visible, view, dispatch }) => {
       </form>
     </Dialog>
   )
+  }
 }
 
 UpdateViewDialog = connect()(UpdateViewDialog)

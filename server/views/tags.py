@@ -2,14 +2,14 @@ from flask import jsonify
 from flask_restful import Resource, reqparse
 
 from util import db
-from models.context import Context
+from models.tag import Tag
 
 
-class Contexts(Resource):
+class Tags(Resource):
     def get(self):
         try:
-            contexts = Context.query.all()
-            return jsonify(contexts=[t.serialize() for t in contexts])
+            tags = Tag.query.all()
+            return jsonify(tags=[t.serialize() for t in tags])
 
         except Exception as e:
             return {'error': str(e)}
@@ -19,14 +19,14 @@ class Contexts(Resource):
             # Parse the arguments
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
-            parser.add_argument('name', type=str, help='Name of the context', location='json')
+            parser.add_argument('name', type=str, help='Name of the tag', location='json')
             args = parser.parse_args()
 
             id = args['id']
             name = args['name']
 
-            new_context = Context(id, name, False)
-            db.session.add(new_context)
+            new_tag = Tag(id, name, False)
+            db.session.add(new_tag)
             db.session.commit()
 
             return {'status': 'ok'}
@@ -41,8 +41,8 @@ class Contexts(Resource):
             args = parser.parse_args()
 
             id = args['id']
-            context_to_delete = db.session.query(Context).filter_by(id=id).first()
-            db.session.delete(context_to_delete)
+            tag_to_delete = db.session.query(Tag).filter_by(id=id).first()
+            db.session.delete(tag_to_delete)
             db.session.commit()
 
             return {'status': 'ok'}
@@ -54,20 +54,18 @@ class Contexts(Resource):
         try:
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
-            parser.add_argument('name', required=False, type=str, help='Name of the context', location='json')
-            parser.add_argument('deleted', required=False, type=str, help='If the context is soft deleted', location='json')
+            parser.add_argument('name', required=False, type=str, help='Name of the tag', location='json')
+            parser.add_argument('deleted', required=False, type=str, help='If the tag is soft deleted', location='json')
             args = parser.parse_args()
 
             id = args['id']
-
-            values = {}
 
             if args['name'] is not None:
                 values['name'] = args['name']
             if args['deleted'] is not None:
                 values['deleted'] = args['deleted']
 
-            db.session.query(Context).filter_by(id=id).update(values)
+            db.session.query(Tag).filter_by(id=id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

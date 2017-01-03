@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import { fetchTasks, fetchContexts, fetchLists, fetchViews } from './actions'
+import { fetchTasks, fetchContexts, fetchTags, fetchLists, fetchViews } from './actions'
 import AddTask from './components/AddTask'
 import AddList from './components/AddList'
 import AddView from './components/AddView'
@@ -21,6 +21,7 @@ class App extends React.Component {
     dispatch(fetchContexts())
     dispatch(fetchLists())
     dispatch(fetchViews())
+    dispatch(fetchTags())
   }
 
   render() {

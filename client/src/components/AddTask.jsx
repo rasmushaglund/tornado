@@ -16,12 +16,13 @@ let AddTask = ({ dialogVisible, currentTask, dispatch  }) => {
     dispatch(toggleUpdateTask(true))
   }
 
-  let label = currentTask ? "Edit Task" : "Add Task"
+  let label = currentTask ? "Edit Task" : "Add Task" 
+  let dialog = dialogVisible ? <UpdateTaskDialog task={currentTask} /> : null
 
   return (
     <div>
       <RaisedButton label={label} onTouchTap={openDialog} />
-      <UpdateTaskDialog visible={dialogVisible} task={currentTask} />
+      {dialog}
     </div>
   )
 }

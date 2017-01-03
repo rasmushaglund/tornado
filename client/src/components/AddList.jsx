@@ -17,11 +17,12 @@ let AddList = ({ dialogVisible, currentList, dispatch }) => {
   }
 
   let label = currentList ? "Edit List" : "Add List"
+  let dialog = dialogVisible ? <UpdateListDialog list={currentList} /> : null
 
   return (
     <div>
       <RaisedButton label={label} onTouchTap={openDialog} />
-      <UpdateListDialog visible={dialogVisible} list={currentList} />
+      {dialog}
     </div>
   )
 }

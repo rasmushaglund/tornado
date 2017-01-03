@@ -20,14 +20,12 @@ class Tasks(Resource):
             # Parse the arguments
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
-            parser.add_argument('description', type=str, help='Description of the task', location='json')
+            parser.add_argument('description', type=str, required=False, help='Description of the task', location='json')
             parser.add_argument('name', type=str, help='Name of the task', location='json')
-            parser.add_argument('lists', type=list, help='Task associated lists', location='json')
-            parser.add_argument('tags', type=list, help='Task tags', location='json')
-            parser.add_argument('contexts', type=list, help='Task contexts', location='json')
+            parser.add_argument('lists', type=list, required=False, help='Task associated lists', location='json')
+            parser.add_argument('tags', type=list, required=False, help='Task tags', location='json')
+            parser.add_argument('contexts', type=list, required=False, help='Task contexts', location='json')
             args = parser.parse_args()
-
-            print args
 
             id = args['id']
             name = args['name']
@@ -52,8 +50,6 @@ class Tasks(Resource):
             parser.add_argument('id', type=str, help='Guid', location='json')
             args = parser.parse_args()
 
-            print args
-
             id = args['id']
             task_to_delete = db.session.query(Task).filter_by(id=id).first()
             db.session.delete(task_to_delete)
@@ -69,20 +65,17 @@ class Tasks(Resource):
         try:
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
-            parser.add_argument('name', type=str, help='Name of the task', location='json')
-            parser.add_argument('description', type=str, help='Description of the task', location='json')
-            parser.add_argument('completed', type=bool, help='If the task is completed', location='json')
-            parser.add_argument('deleted', type=bool, help='If the task is soft deleted', location='json')
-            parser.add_argument('lists', type=list, help='Task associated lists', location='json')
-            parser.add_argument('tags', type=list, help='Task tags', location='json')
-            parser.add_argument('contexts', type=list, help='Task contexts', location='json')
+            parser.add_argument('name', type=str, required=False, help='Name of the task', location='json')
+            parser.add_argument('description', type=str, required=False, help='Description of the task', location='json')
+            parser.add_argument('completed', type=bool, required=False, help='If the task is completed', location='json')
+            parser.add_argument('deleted', type=bool, required=False, help='If the task is soft deleted', location='json')
+            parser.add_argument('lists', type=list, required=False, help='Task associated lists', location='json')
+            parser.add_argument('tags', type=list, required=False, help='Task tags', location='json')
+            parser.add_argument('contexts', type=list, required=False, help='Task contexts', location='json')
             args = parser.parse_args()
 
-            print args
 
             id = args['id']
-
-            args = parser.parse_args()
 
             values = {}
 
@@ -100,7 +93,6 @@ class Tasks(Resource):
                 values['tags'] = ','.join(str(x) for x in args['tags']),
             if args['contexts'] is not None:
                 values['contexts'] = ','.join(str(x) for x in args['contexts'])
-            print values
             db.session.query(Task).filter_by(id=id).update(values)
             db.session.commit()
 

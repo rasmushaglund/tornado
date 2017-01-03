@@ -37,9 +37,9 @@ const views = (state = [], action) => {
         view.id !== action.id
       )
   } else if (action.type === 'RECEIVE_VIEWS') {
-    return _.map(action.views, data => {
-      return view(data, 'ADD_VIEW')
-    })
+    return _.object(_.map(action.views, data => {
+      return [data.id, view(data, 'ADD_VIEW')]
+    }))
   } else {
       return state
   }

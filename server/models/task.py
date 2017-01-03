@@ -9,10 +9,10 @@ class Task(db.Model):
     contexts = db.Column(db.Text())
     tags = db.Column(db.Text())
     completed = db.Column(db.Boolean())
-    name = db.Column(db.String(45))
+    name = db.Column(db.String(200))
     deleted = db.Column(db.Boolean())
     importance = db.Column(db.Integer())
-    description = db.Column(db.Text())
+    description = db.Column(db.String(1000))
     energy = db.Column(db.Integer())
     deadline = db.Column(db.Date())
     time = db.Column(db.String(20))
@@ -42,14 +42,10 @@ class Task(db.Model):
             lists = None
 
         if self.tags:
-            print self.tags
             tags = self.tags.split(',')
         else:
             tags = None
 
-        print self.id
-        print self.deleted
-        print self.completed
         return {
             'id': self.id,
             'lists': lists,
@@ -61,5 +57,5 @@ class Task(db.Model):
             'importance': self.importance,
             'deadline': self.deadline,
             'description': self.description,
-            'tile': self.time
+            'time': self.time
         }

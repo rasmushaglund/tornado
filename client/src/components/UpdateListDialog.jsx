@@ -7,10 +7,12 @@ import { connect } from 'react-redux'
 import { addList, updateList, softDeleteList, toggleUpdateList } from '../actions'
 
 class UpdateListDialog extends React.Component {
- 
+  componentDidMount () {
+    this.textInput.focus()
+  }
+
   render () {
     let { visible, list, dispatch } = this.props
-    let textInput
 
     let closeDialog = () =>  {
       dispatch(toggleUpdateList(false))
@@ -33,27 +35,27 @@ class UpdateListDialog extends React.Component {
       <Dialog
           title={label}
           modal={false}
-          open={visible}
+          open={true}
           onRequestClose={closeDialog}
           autoScrollBodyContent={true} >
         <form onSubmit={e => {
           e.preventDefault()
-          if (!textInput.value.trim()) {
+          if (!this.textInput.value.trim()) {
             return
           }
 
           if (list) {
-            dispatch(updateList(list.id, textInput.value))
+            dispatch(updateList(list.id, this.textInput.value))
           } else {
-            dispatch(addList(textInput.value))
+            dispatch(addList(this.textInput.value))
           }
 
           closeDialog()
 
-          textInput.value = ''
+          this.textInput.value = ''
         }}>
           <input ref={node => {
-            textInput = node
+            this.textInput = node
             }} defaultValue={list && list.name} />
           <FlatButton
             label="Cancel"

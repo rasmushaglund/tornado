@@ -21,12 +21,14 @@ class Lists(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
             parser.add_argument('name', type=str, help='Name of the list', location='json')
+            parser.add_argument('description', required=False, type=str, help='Description of the list', location='json')
             args = parser.parse_args()
 
             id = args['id']
             name = args['name']
+            description = args['description']
 
-            new_list = List(id, name, False)
+            new_list = List(id, name, False, description)
             db.session.add(new_list)
             db.session.commit()
 
@@ -57,21 +59,23 @@ class Lists(Resource):
         try:
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
-            parser.add_argument('name', type=str, help='Name of the list', location='json')
-            parser.add_argument('deleted', type=str, help='If the list is soft deleted', location='json')
+            parser.add_argument('name', type=str, required=False, help='Name of the list', location='json')
+            parser.add_argument('deleted', type=str, required=False, help='If the list is soft deleted', location='json')
+            parser.add_argument('description', required=False, type=str, help='Description of the list', location='json')
             args = parser.parse_args()
 
-            id = args['id']
+            id = args['id']
 
-            args = parser.parse_args()
+            values = {}
 
-            db.session.query(List).filter_by(id=id).update(
-                dict(
-                    name=args['name'],
-                    deleted=args['deleted']
-                )
-            )
+            if args['name'] is not None:
+                values['name'] = args['name']
+            if args['description'] is not None:
+                values['description'] = args['description']
+            if args['deleted'] is not None:
+                values['deleted'] = args['deleted']
 
+            db.session.query(List).filter_by(id=id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

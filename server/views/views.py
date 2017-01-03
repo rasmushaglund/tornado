@@ -21,14 +21,16 @@ class Views(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
             parser.add_argument('name', type=str, help='Name of the view', location='json')
+            parser.add_argument('description', type=str, required=False, help='Description of the view', location='json')
             parser.add_argument('filter', type=str, help='Filter', location='json')
             args = parser.parse_args()
 
             id = args['id']
             name = args['name']
             filter = args['filter']
+            description = args['description']
 
-            new_view = View(id, name, filter, False)
+            new_view = View(id, name, filter, False, description)
             db.session.add(new_view)
             db.session.commit()
 
@@ -59,23 +61,26 @@ class Views(Resource):
         try:
             parser = reqparse.RequestParser()
             parser.add_argument('id', type=str, help='Guid', location='json')
-            parser.add_argument('name', type=str, help='Name of the view', location='json')
-            parser.add_argument('filter', type=str, help='View filter', location='json')
-            parser.add_argument('deleted', type=str, help='If the view is soft deleted', location='json')
+            parser.add_argument('name', type=str, required=False, help='Name of the view', location='json')
+            parser.add_argument('description', type=str, required=False, help='Description of the view', location='json')
+            parser.add_argument('filter', type=str, required=False, help='View filter', location='json')
+            parser.add_argument('deleted', type=str, required=False, help='If the view is soft deleted', location='json')
             args = parser.parse_args()
 
             id = args['id']
 
-            args = parser.parse_args()
+            values = {}
 
-            db.session.query(View).filter_by(id=id).update(
-                dict(
-                    name=args['name'],
-                    filter=args['filter'],
-                    deleted=args['deleted']
-                )
-            )
+            if args['name'] is not None:
+                values['name'] = args['name']
+            if args['description'] is not None:
+                values['description'] = args['description']
+            if args['deleted'] is not None:
+                values['deleted'] = args['deleted']
+            if args['filter'] is not None:
+                values['filter'] = args['filter']
 
+            db.session.query(View).filter_by(id=id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

@@ -9,11 +9,11 @@ import  {CardHeader as UiCardHeader, CardText as UiCardText} from 'material-ui/C
 import UiPaper from 'material-ui/Paper'
 
 
-let View = ({ id, tasks, name, onViewSettingsClick, filter }) => {
+let View = ({ view, tasks, name, filter, dispatch }) => {
   return (
     <UiPaper style={{marginBottom: 40}} zDepth={4}>
-        <UiCardHeader title={name} subtitle={filter}
-          onDoubleClick={() => onViewSettingsClick(id)}/>
+        <UiCardHeader title={view.name} subtitle={view.filter}
+          onDoubleClick={() => dispatch(toggleUpdateView(view.id))}/>
         <TaskList tasks={tasks} />
     </UiPaper>
   )
@@ -43,20 +43,13 @@ const mapStateToProps = (state, props) => ({
       return !!task.lists && task.lists.length > 0
     }
 
-    return !isDeleted() && eval(props.filter)
+    return !isDeleted() && eval(props.view.filter)
   }),
-  name: props.name,
-  filter: props.filter,
-  id: props.id
-})
-
-const mapDispatchToProps =  ({
-  onViewSettingsClick: toggleUpdateView
+  view: props.view
 })
 
 View = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(View)
 
 export default View

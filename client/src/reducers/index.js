@@ -3,6 +3,7 @@ import tasks from './tasks'
 import views from './views'
 import contexts from './contexts'
 import lists from './lists'
+import tags from './tags'
 import ui from './ui'
 
 const tornado = combineReducers({
@@ -10,7 +11,8 @@ const tornado = combineReducers({
   tasks,
   views,
   lists,
-  contexts
+  contexts,
+  tags
 })
 
 export default tornado
