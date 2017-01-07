@@ -22,13 +22,15 @@ class Lists(Resource):
             parser.add_argument('id', type=str, help='Guid', location='json')
             parser.add_argument('name', type=str, help='Name of the list', location='json')
             parser.add_argument('description', required=False, type=str, help='Description of the list', location='json')
+            parser.add_argument('children', required=False, type=str, help='Sub lists', location='json')
             args = parser.parse_args()
 
             id = args['id']
             name = args['name']
             description = args['description']
+            children = args['children']
 
-            new_list = List(id, name, False, description)
+            new_list = List(id, name, False, description, children)
             db.session.add(new_list)
             db.session.commit()
 

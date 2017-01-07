@@ -22,16 +22,21 @@ export const fetchTasks = () => (dispatch) => {
     .then(json => dispatch(receiveTasks(json)))
 }
 
-export const addTask = (name, description, lists, contexts, tags) => {
+export const addTask = (name, description, lists, contexts, tags, time, importance, deadline, energy) => {
   const id = uuidV4()
 
-  jsonFetch({
+  jsonFetch(
+    {
       id: id,
       name: name,
       description: description,
       lists: lists,
       contexts: contexts,
-      tags: tags
+      tags: tags,
+      time: time,
+      importance: importance,
+      deadline: deadline,
+      energy: energy
     },
     'http://localhost:5000/tasks'
   )
@@ -43,18 +48,27 @@ export const addTask = (name, description, lists, contexts, tags) => {
     description, 
     lists,
     contexts,
-    tags
+    tags,
+    time, 
+    importance,
+    deadline,
+    energy
   }
 }
 
-export const updateTask = (id, name, description, lists, contexts, tags) => {
-  jsonFetch({
+export const updateTask = (id, name, description, lists, contexts, tags, time, importance, deadline, energy) => {
+  jsonFetch(
+    {
       id: id,
       name: name,
       lists: lists,
       description: description,
       contexts: contexts,
-      tags: tags
+      tags: tags,
+      time: time,
+      importance: importance,
+      deadline: deadline,
+      energy: energy
     },
     'http://localhost:5000/tasks',
     'PUT'
@@ -67,7 +81,11 @@ export const updateTask = (id, name, description, lists, contexts, tags) => {
     description,
     lists,
     contexts,
-    tags
+    tags,
+    time,
+    importance,
+    deadline,
+    energy
   }
 }
 

@@ -6,6 +6,7 @@ var trim = require("underscore.string/trim");
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import DatePicker from 'material-ui/DatePicker';
 import TextField from 'material-ui/TextField';
 import Chip from 'material-ui/Chip';
 import AutoComplete from 'material-ui/AutoComplete';
@@ -48,12 +49,17 @@ class UpdateTaskDialog extends React.Component {
       }),
       contextSearchText: '',
       listSearchText: '',
-      tagSearchText: ''
+      tagSearchText: '',
+      deadline: props.task && new Date(props.task.deadline) || {}
     }
   }
 
   componentDidMount () {
     this.textInput.focus()
+  }
+
+  handleDeadlineChanged = (e, date) => {
+    this.setState({deadline: date}) //date})
   }
 
   handleListDelete = (id, input) => {
@@ -229,18 +235,44 @@ class UpdateTaskDialog extends React.Component {
           open={true}
           onRequestClose={closeDialog}
           autoScrollBodyContent={true} >
-          <div>
-            <TextField ref={node => {
-              this.textInput = node
-            }} defaultValue={task && task.name}
-            hintText="Task name"/>
-          </div>
-          <div>
-            <TextField ref={node => {
-              this.descriptionInput = node
-            }} defaultValue={task && task.description}
-            hintText="Task description"/>
-          </div>
+        <div>
+          <TextField ref={node => {
+            this.textInput = node
+          }} defaultValue={task && task.name}
+          hintText="Task name"/>
+        </div>
+        <div>
+          <TextField ref={node => {
+            this.descriptionInput = node
+          }} defaultValue={task && task.description}
+          hintText="Task description"/>
+        </div>
+        <div>
+          <TextField ref={node => {
+            this.importanceInput = node
+          }} defaultValue={task && task.importance}
+          hintText="Importance"/>
+        </div>
+        <div>
+          <TextField ref={node => {
+            this.energyInput = node
+          }} defaultValue={task && task.energy}
+          hintText="Energy"/>
+        </div>
+        <div>
+          <TextField ref={node => {
+            this.timeInput = node
+          }} defaultValue={task && task.time}
+          hintText="Time to complete"/>
+        </div>
+        <div>
+          <DatePicker ref={node => {
+              this.deadlineInput = node
+          }} value={this.state.deadline}
+          onChange={this.handleDeadlineChanged}
+          autoOk={true}
+          hintText="Deadline" />
+        </div>
           <div>
             <AutoComplete ref={node => {
               this.tagInput = node
@@ -284,15 +316,48 @@ class UpdateTaskDialog extends React.Component {
               return
             }
 
+          let deadlineDate
+
+
+            if (this.state.deadline && this.state.deadline instanceof Date) {
+              deadlineDate = this.state.deadline.toUTCString()
+            }
+          
+            //pp.applet deadline = moment(this.state.deadline).format('ddd, DD MMM YYYY HH:mm:ss ZZ')
+
             if (task) {
-              dispatch(updateTask(task.id, this.textInput.input.value, this.descriptionInput.input.value, this.state.lists, this.state.contexts, this.state.tags))
+              dispatch(
+                updateTask(
+                  task.id, 
+                  this.textInput.input.value, 
+                  this.descriptionInput.input.value, 
+                  this.state.lists, 
+                  this.state.contexts, 
+                  this.state.tags,  
+                  this.timeInput.input.value, 
+                  this.importanceInput.input.value, 
+                  deadlineDate, 
+                  this.energyInput.input.value
+                )
+              )
             } else {
-              dispatch(addTask(this.textInput.input.value, this.descriptionInput.input.value, this.state.lists, this.state.contexts, this.state.tags))
+              dispatch(
+                addTask(
+                  this.textInput.input.value, 
+                  this.descriptionInput.input.value, 
+                  this.state.lists, 
+                  this.state.contexts, 
+                  this.state.tags, 
+                  this.timeInput.input.value, 
+                  this.importanceInput.input.value, 
+                  deadlineDate, 
+                  this.energyInput.input.value
+                )
+              )
             }
 
             closeDialog()
 
-          this.textInput.input.value = ''
           this.tagInput.refs.searchTextField.input.value = ''
           this.contextInput.refs.searchTextField.input.value = ''
           this.listInput.refs.searchTextField.input.value = ''

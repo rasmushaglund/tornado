@@ -8,17 +8,20 @@ class List(db.Model):
     name = db.Column(db.String(200))
     deleted = db.Column(db.Boolean())
     description = db.Column(db.String(1000))
+    children = db.Column(db.String())
 
-    def __init__(self, id, name, deleted, description):
+    def __init__(self, id, name, deleted, description, children):
         self.id = id
         self.name = name
         self.deleted = deleted
-        self.description = description
+        self.description = description,
+        self.children = children
 
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
             'deleted': self.deleted,
-            'description': self.description
+            'description': self.description,
+            'children': self.children
         }

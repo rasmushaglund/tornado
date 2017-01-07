@@ -4,7 +4,6 @@ import { fetchTasks, fetchContexts, fetchTags, fetchLists, fetchViews } from './
 import AddTask from './components/AddTask'
 import AddList from './components/AddList'
 import AddView from './components/AddView'
-import AddContext from './components/AddContext'
 import Lists from './components/Lists'
 import Views from './components/Views'
 
@@ -32,7 +31,6 @@ class App extends React.Component {
       <AddView />
       <AddList />
       <AddTask />
-      <AddContext />
       <Views />
       <Lists />
       </div>

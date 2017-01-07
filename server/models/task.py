@@ -28,7 +28,8 @@ class Task(db.Model):
         self.importance = importance
         self.deadline = deadline
         self.description = description
-        self.time = time
+        self.time = time,
+        self.energy = energy
 
     def serialize(self):
         if self.contexts:
@@ -57,5 +58,6 @@ class Task(db.Model):
             'importance': self.importance,
             'deadline': self.deadline,
             'description': self.description,
-            'time': self.time
+            'time': self.time,
+            'energy': self.energy
         }

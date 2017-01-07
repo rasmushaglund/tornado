@@ -10,7 +10,11 @@ const task = (state, action) => {
         description: action.description,
         lists: action.lists,
         tags: action.tags,
-        contexts: action.contexts
+        contexts: action.contexts,
+        importance: action.importance,
+        deadline: action.deadline,
+        time: action.time,
+        energy: action.energy
       }
     case "ADD_TASK":
       return {
@@ -20,8 +24,12 @@ const task = (state, action) => {
         name: action.name,
         description: action.description,
         lists: action.lists,
-        tags: action.tags,
-        contexts: action.contexts
+        tags: action.tags,
+        contexts: action.contexts,
+        importance: action.importance,
+        deadline: action.deadline,
+        time: action.time,
+        energy: action.energy
       }
     case "TOGGLE_TASK":
       return {
