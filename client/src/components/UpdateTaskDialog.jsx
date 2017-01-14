@@ -33,11 +33,29 @@ const styles = {
 class UpdateTaskDialog extends React.Component {
   constructor (props) {
     super(props)
+    let selectedObject = props.selectedObject
+    let commonLists, commonTags, commonContexts
+
+    if (selectedObject) {
+      let taskLists = []
+      let taskTags = []
+      let taskContexts = []
+      
+      _.each(selectedObject.tasks, (task) => {
+        taskLists.push(task.lists)
+        taskTags.push(task.tags)
+        taskContexts.push(task.contexts)
+      })
+
+      commonLists = _.intersection(...taskLists)
+      commonTags = _.intersection(...taskTags)
+      commonContexts = _.intersection(...taskContexts)
+    }
 
     this.state = {
-      tags: props.task && props.task.tags || [],
-      contexts: props.task && props.task.contexts || [],
-      lists: props.task && props.task.lists || [],
+      tags: props.task && props.task.tags || commonTags || [],
+      contexts: props.task && props.task.contexts || commonContexts || [],
+      lists: props.task && props.task.lists || commonLists || [],
       contextDataSource: _.map(props.contexts, (context) => {
         return {textKey: context.name, valueKey: context.id}
       }),
@@ -50,7 +68,7 @@ class UpdateTaskDialog extends React.Component {
       contextSearchText: '',
       listSearchText: '',
       tagSearchText: '',
-      deadline: props.task && new Date(props.task.deadline) || {}
+      deadline: props.task && props.task.deadline && new Date(props.task.deadline) || {}
     }
   }
 
@@ -316,7 +334,7 @@ class UpdateTaskDialog extends React.Component {
               return
             }
 
-          let deadlineDate
+            let deadlineDate
 
 
             if (this.state.deadline && this.state.deadline instanceof Date) {
@@ -327,32 +345,34 @@ class UpdateTaskDialog extends React.Component {
 
             if (task) {
               dispatch(
-                updateTask(
-                  task.id, 
-                  this.textInput.input.value, 
-                  this.descriptionInput.input.value, 
-                  this.state.lists, 
-                  this.state.contexts, 
-                  this.state.tags,  
-                  this.timeInput.input.value, 
-                  this.importanceInput.input.value, 
-                  deadlineDate, 
-                  this.energyInput.input.value
-                )
+                updateTask({
+                  id: task.id, 
+                  name: this.textInput.input.value, 
+                  description: this.descriptionInput.input.value, 
+                  lists: this.state.lists, 
+                  contexts: this.state.contexts, 
+                  tags: this.state.tags,
+                  completed: this.state.completed,
+                  deleted: this.state.deleted,
+                  time: this.timeInput.input.value, 
+                  importance: this.importanceInput.input.value, 
+                  deadline: deadlineDate, 
+                  energy: this.energyInput.input.value
+                })
               )
             } else {
               dispatch(
-                addTask(
-                  this.textInput.input.value, 
-                  this.descriptionInput.input.value, 
-                  this.state.lists, 
-                  this.state.contexts, 
-                  this.state.tags, 
-                  this.timeInput.input.value, 
-                  this.importanceInput.input.value, 
-                  deadlineDate, 
-                  this.energyInput.input.value
-                )
+                addTask({
+                  name: this.textInput.input.value, 
+                  description: this.descriptionInput.input.value, 
+                  lists: this.state.lists, 
+                  contexts: this.state.contexts, 
+                  tags: this.state.tags, 
+                  time: this.timeInput.input.value, 
+                  importance: this.importanceInput.input.value, 
+                  deadline: deadlineDate, 
+                  energy: this.energyInput.input.value
+                })
               )
             }
 
@@ -383,7 +403,8 @@ const mapStateToProps = (state) => ({
   tasks: state.tasks,
   lists: state.lists,
   contexts: state.contexts,
-  tags: state.tags
+  tags: state.tags,
+  selectedObject: state.ui.selectedObject
 })
 
 UpdateTaskDialog = connect(

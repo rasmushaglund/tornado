@@ -1,6 +1,7 @@
 const initialState = {
   editViewVisible: false,
   editTaskVisible: false,
+  selectedObject: null,
   editListVisible: false,
   editContextVisible: false
 }
@@ -30,6 +31,17 @@ const ui = (state = initialState, action) => {
         ...state,
         editContextVisible: !state.editContextVisible,
         currentContext: action.context
+      }
+    case "TOGGLE_SELECT_OBJECT":
+      let newSelectedObject
+      if (!state.selectedObject || action.object && 
+        state.selectedObject.id !== action.object.id) {
+        newSelectedObject = action.object
+      }
+
+      return {
+        ...state,
+        selectedObject: newSelectedObject
       }
     default:
       return state

@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-
+import { sort } from '../util'
 import UiList from 'material-ui/List/List'
 import UiListItem from 'material-ui/List/ListItem'
 import Checkbox from 'material-ui/Checkbox';
 
 import {blue500, grey300, red700} from 'material-ui/styles/colors';
-import { toggleTask, toggleUpdateTask, softDeleteTask, deleteTask } from '../actions'
+import { toggleTask, toggleSelectObject, toggleUpdateTask, softDeleteTask, deleteTask } from '../actions'
 
 import IconClear from 'material-ui/svg-icons/content/clear';
 import IconDeleteForever from 'material-ui/svg-icons/action/delete-forever';
@@ -27,13 +27,13 @@ class Task extends React.Component {
           style={{display: this.state.hover ? "block" : "none"}}
           onClick={e => {
             e.preventDefault()
-            this.props.softDeleteTask(task.id, false)}
+            this.props.softDeleteTask(task, false)}
           } />
         <IconDeleteForever color={red700}
           style={{display: this.state.hover ? "block" : "none"}}
           onClick={e => {
             e.preventDefault()
-            this.props.deleteTask(task.id)}
+            this.props.deleteTask(task)}
           } />
       </div>
     ) : (
@@ -41,7 +41,7 @@ class Task extends React.Component {
         style={{display: this.state.hover ? "block" : "none"}}
         onClick={e => {
           e.preventDefault()
-          this.props.softDeleteTask(task.id, true)}
+          this.props.softDeleteTask(task, true)}
         } />
     )
 
@@ -51,23 +51,27 @@ class Task extends React.Component {
         onMouseOver={() => this.setState({hover:true})}
         onMouseLeave={() => this.setState({hover:false})}
         leftIcon={
-          <Checkbox checked={task.completed} onCheck={() => this.props.toggleTask(task.id, !task.completed)} />
+          <Checkbox checked={task.completed} onCheck={() => this.props.toggleTask(task, !task.completed)} />
         }
         rightIcon={
           actions
         }
-        onDoubleClick={() => this.props.toggleUpdateTask(task.id)} />
+        onClick={()=> this.props.toggleSelectObject(task)}
+        onDoubleClick={() => this.props.toggleUpdateTask(task)} />
     )
   }
 }
 
-let TaskList = ({ tasks, toggleTask, toggleUpdateTask, deleteTask, softDeleteTask }) => {
+let TaskList = ({ tasks, toggleTask, toggleUpdateTask, toggleSelectObject, deleteTask, softDeleteTask }) => {
+  //var a = sort(tasks, "name")
+ 
   return (
     <UiList>
-      {tasks && tasks.map(task =>
+      {tasks && sort(tasks, "completed, name").map(task =>
         <Task task={task}
           key={task.id}
           toggleTask={toggleTask}
+          toggleSelectObject={toggleSelectObject}
           toggleUpdateTask={toggleUpdateTask}
           deleteTask={deleteTask}
           softDeleteTask={softDeleteTask} />
@@ -91,6 +95,7 @@ const mapDispatchToProps =  ({
   toggleTask: toggleTask,
   toggleUpdateTask: toggleUpdateTask,
   deleteTask: deleteTask,
+  toggleSelectObject: toggleSelectObject,
   softDeleteTask: softDeleteTask
 })
 

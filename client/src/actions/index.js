@@ -22,92 +22,51 @@ export const fetchTasks = () => (dispatch) => {
     .then(json => dispatch(receiveTasks(json)))
 }
 
-export const addTask = (name, description, lists, contexts, tags, time, importance, deadline, energy) => {
+export const addTask = (taskData) => {
   const id = uuidV4()
 
+  var task = Object.assign(taskData, {
+    id: id,
+    importance: parseInt(taskData.importance) || null,
+    energy: parseInt(taskData.energy) || null
+  })
+
   jsonFetch(
-    {
-      id: id,
-      name: name,
-      description: description,
-      lists: lists,
-      contexts: contexts,
-      tags: tags,
-      time: time,
-      importance: importance,
-      deadline: deadline,
-      energy: energy
-    },
+    task,
     'http://localhost:5000/tasks'
   )
 
   return {
     type: 'ADD_TASK',
-    id: id,
-    name,
-    description, 
-    lists,
-    contexts,
-    tags,
-    time, 
-    importance,
-    deadline,
-    energy
+    ...task
   }
 }
 
-export const updateTask = (id, name, description, lists, contexts, tags, time, importance, deadline, energy) => {
+export const updateTask = (taskData) => {
+  var task =  Object.assign(taskData, { 
+    importance: parseInt(taskData.importance) || null,
+    energy: parseInt(taskData.energy) || null
+  })
+
   jsonFetch(
-    {
-      id: id,
-      name: name,
-      lists: lists,
-      description: description,
-      contexts: contexts,
-      tags: tags,
-      time: time,
-      importance: importance,
-      deadline: deadline,
-      energy: energy
-    },
+    task,
     'http://localhost:5000/tasks',
     'PUT'
   )
 
   return {
     type: 'UPDATE_TASK',
-    id: id,
-    name,
-    description,
-    lists,
-    contexts,
-    tags,
-    time,
-    importance,
-    deadline,
-    energy
+    ...task
   }
 }
 
-export const softDeleteTask = (id, deleted = true) => { 
-  jsonFetch({
-      id: id,
-      deleted: deleted
-    },
-    'http://localhost:5000/tasks',
-    'PUT'
-  )
-
-  return {
-    type: 'SOFT_DELETE_TASK',
-    id,
-    deleted
-  }
+export const softDeleteTask = (task, deleted = true) => { 
+  return updateTask(Object.assign(task, {deleted: deleted}))
 }
 
-export const deleteTask = (id) => {
+export const deleteTask = (task) => {
   jsonFetch({
-      id: id
+      id: task.id
     },
     'http://localhost:5000/tasks',
     'DELETE'
@@ -119,20 +78,8 @@ export const deleteTask = (id) => {
   }
 }
 
-export const toggleTask = (id, completed) => {
-  jsonFetch({
-      id: id,
-      completed: completed
-    },
-    'http://localhost:5000/tasks',
-    'PUT'
-  )
-
-  return {
-    type: 'TOGGLE_TASK',
-    id,
-    completed
-  }
+export const toggleTask = (task, completed) => {
+  return updateTask(Object.assign(task, {completed: completed}))
 }
 
 export const toggleUpdateTask = (task) => ({
@@ -469,4 +416,9 @@ export const deleteTag = (id) => {
 export const toggleUpdateTag = (tag) => ({
   type: 'TOGGLE_EDIT_TAG',
   tag
+})
+
+export const toggleSelectObject = (object) => ({
+  type: 'TOGGLE_SELECT_OBJECT',
+  object
 })

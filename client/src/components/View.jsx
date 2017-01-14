@@ -2,18 +2,21 @@ import React, { PropTypes } from 'react'
 var _ = require("underscore");
 
 import { connect } from 'react-redux'
-import { toggleUpdateView } from '../actions'
+import { toggleUpdateView, toggleSelectObject } from '../actions'
 import TaskList from './TaskList'
 
 import  {CardHeader as UiCardHeader, CardText as UiCardText} from 'material-ui/Card'
 import UiPaper from 'material-ui/Paper'
 
 
-let View = ({ view, tasks, name, filter, dispatch }) => {
+let View = ({ view, tasks, name, filter, selectedObject, dispatch }) => {
+  let selected = selectedObject && selectedObject.id === view.id
+  console.log(selected)
   return (
-    <UiPaper style={{marginBottom: 40}} zDepth={4}>
-        <UiCardHeader title={view.name} subtitle={view.filter}
-          onDoubleClick={() => dispatch(toggleUpdateView(view.id))}/>
+    <UiPaper style={{marginBottom: 40, border: selected ? "1px solid" : "none"}} zDepth={4}>
+      <UiCardHeader title={view.name} subtitle={view.filter}
+          onClick={() => dispatch(toggleSelectObject(view))}
+          onDoubleClick={() => dispatch(toggleSelectObject(view))}/>
         <TaskList tasks={tasks} />
     </UiPaper>
   )
@@ -45,7 +48,8 @@ const mapStateToProps = (state, props) => ({
 
     return !isDeleted() && eval(props.view.filter)
   }),
-  view: props.view
+  view: props.view,
+  selectedObject: state.ui.selectedObject
 })
 
 View = connect(

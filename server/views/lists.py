@@ -1,11 +1,19 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
+from flask_login import login_required
 
 from util import db, app
 from models.list import List
 
 
 class Lists(Resource):
+    # method_decorators = {
+    #    'get': [login_required],
+    #    'post': [login_required],
+    #    'delete': [login_required],
+    #    'put': [login_required]
+    #}
+
     def get(self):
         try:
             lists = List.query.all()

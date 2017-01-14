@@ -1,24 +1,30 @@
 var _ = require("underscore");
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { toggleUpdateList } from '../actions'
+import { toggleUpdateList, toggleSelectObject } from '../actions'
 import TaskList from './TaskList'
 
 import {CardHeader as UiCardHeader} from 'material-ui/Card'
 import UiPaper from 'material-ui/Paper'
 
-let Lists = ({ lists, dispatch, deletedTasks }) => (
+let Lists = ({ lists, dispatch, deletedTasks, selectedObject }) => (
   <ul>
     <UiPaper style={{marginBottom: 40}} zDepth={4}>
       <UiCardHeader title="Trash can" />
       <TaskList key={0} tasks={deletedTasks} />
     </UiPaper>
-    {lists.map(list =>
-      <UiPaper style={{marginBottom: 40}} key={list.id} zDepth={4} >
-        <UiCardHeader title={list.name}
-          onDoubleClick={() => dispatch(toggleUpdateList(list.id))} />
-        <TaskList key={list.id} {...list} />
-      </UiPaper>
+    {lists.map(list => {
+      let selected = selectedObject && selectedObject.id === list.id
+
+      return (
+        <UiPaper style={{marginBottom: 40, border: selected ? "1px solid" : "none"}} key={list.id} zDepth={4} >
+          <UiCardHeader title={list.name}
+            onClick={() => dispatch(toggleSelectObject(list))}
+            onDoubleClick={() => dispatch(toggleUpdateList(list.id))} />
+          <TaskList key={list.id} {...list} />
+        </UiPaper>
+      )
+    }
     )}
   </ul>
 )
@@ -28,7 +34,8 @@ const mapStateToProps = (state) => ({
     let tasks = _.filter(state.tasks, (task) => _.contains(task.lists, list.id) && !task.deleted)
     return Object.assign(list, {tasks: tasks})
   }).value(),
-  deletedTasks: _.filter(state.tasks, (task) => task.deleted)
+  deletedTasks: _.filter(state.tasks, (task) => task.deleted),
+  selectedObject: state.ui.selectedObject
 })
 
 Lists = connect(

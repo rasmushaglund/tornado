@@ -16,38 +16,42 @@ class Tasks(Resource):
             return {'error': str(e)}
 
     def post(self):
-        try:
-            # Parse the arguments
-            parser = reqparse.RequestParser()
-            parser.add_argument('id', type=str, help='Guid', location='json')
-            parser.add_argument('description', type=str, required=False, help='Description of the task', location='json')
-            parser.add_argument('name', type=str, help='Name of the task', location='json')
-            parser.add_argument('importance', required=False, type=int, help='Importance', location='json')
-            parser.add_argument('energy', required=False, type=int, help='Energy', location='json')
-            parser.add_argument('deadline', required=False, type=inputs.date, help='Deadline', location='json')
-            parser.add_argument('time', type=str, required=False, help='Time to complete', location='json')
-            parser.add_argument('lists', type=list, required=False, help='Task associated lists', location='json')
-            parser.add_argument('tags', type=list, required=False, help='Task tags', location='json')
-            parser.add_argument('contexts', type=list, required=False, help='Task contexts', location='json')
+        # try:
+        # Parse the arguments
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('id', type=str, help='Guid', location='json')
+        parser.add_argument('description', type=str, required=False, help='Description of the task', location='json')
+        parser.add_argument('name', type=str, help='Name of the task', location='json')
+        parser.add_argument('importance', required=False, type=int, help='Importance', location='json')
+        parser.add_argument('energy', required=False, type=int, help='Energy', location='json')
+        parser.add_argument('deadline', required=False, type=inputs.datetime_from_rfc822, help='Deadline', location='json')
+        parser.add_argument('time', type=str, required=False, help='Time to complete', location='json')
+        parser.add_argument('lists', type=list, required=False, help='Task associated lists', location='json')
+        parser.add_argument('tags', type=list, required=False, help='Task tags', location='json')
+        parser.add_argument('contexts', type=list, required=False, help='Task contexts', location='json')
 
-            args = parser.parse_args()
+        args = parser.parse_args()
 
-            id = args['id']
-            name = args['name']
-            description = args['description']
-            lists = ','.join(str(x) for x in args['lists'])
-            tags = ','.join(str(x) for x in args['tags'])
-            contexts = ','.join(str(x) for x in args['contexts'])
+        id = args['id']
+        name = args['name']
+        description = args['description']
+        lists = ','.join(str(x) for x in args['lists'])
+        tags = ','.join(str(x) for x in args['tags'])
+        contexts = ','.join(str(x) for x in args['contexts'])
+        importance = args['importance']
+        energy = args['energy']
+        deadline = args['deadline']
+        time = args['time']
 
-            new_task = Task(id, lists, contexts, tags, False, name, False, importance, description, energy, deadline, time)
-            db.session.add(new_task)
-            db.session.commit()
+        new_task = Task(id, lists, contexts, tags, False, name, False, importance, description, energy, deadline, time)
+        db.session.add(new_task)
+        db.session.commit()
 
-            return {'status': 'ok'}
+        return {'status': 'ok'}
 
-        except Exception as e:
-            app.logger.error(e)
-            return {'error': str(e)}
+        #except Exception as e:
+        #    app.logger.error(e)
+        #    return {'error': str(e)}
 
     def delete(self):
         try:
@@ -87,28 +91,27 @@ class Tasks(Resource):
 
             values = {}
 
-            if args['name'] is not None:
-                values['name'] = args['name']
-            if args['importance'] is not None:
-                values['importance'] = args['importance']
-            if args['energy'] is not None:
-                values['energy'] = args['energy']
-            if args['deadline'] is not None:
-                values['deadline'] = args['deadline']
-            if args['time'] is not None:
-                values['time'] = args['time']
-            if args['description'] is not None:
-                values['description'] = args['description']
-            if args['completed'] is not None:
-                values['completed'] = args['completed']
-            if args['deleted'] is not None:
-                values['deleted'] = args['deleted']
-            if args['lists'] is not None:
-                values['lists'] = ','.join(str(x) for x in args['lists']),
-            if args['tags'] is not None:
-                values['tags'] = ','.join(str(x) for x in args['tags']),
-            if args['contexts'] is not None:
+            values['name'] = args['name']
+            values['importance'] = args['importance']
+            values['energy'] = args['energy']
+            values['deadline'] = args['deadline']
+            values['time'] = args['time']
+            values['lists'] = args['lists']
+            values['tags'] = args['tags']
+            values['contexts'] = args['contexts']
+            values['description'] = args['description']
+            values['completed'] = args['completed']
+            values['deleted'] = args['deleted']
+
+            if values['lists'] is not None:
+                values['lists'] = ','.join(str(x) for x in args['lists'])
+
+            if values['tags'] is not None:
+                values['tags'] = ','.join(str(x) for x in args['tags'])
+
+            if values['contexts'] is not None:
                 values['contexts'] = ','.join(str(x) for x in args['contexts'])
+
             db.session.query(Task).filter_by(id=id).update(values)
             db.session.commit()
 
