@@ -6,7 +6,8 @@ import UiListItem from 'material-ui/List/ListItem'
 import Checkbox from 'material-ui/Checkbox';
 
 import {blue500, grey300, red700} from 'material-ui/styles/colors';
-import { toggleTask, toggleSelectObject, toggleUpdateTask, softDeleteTask, deleteTask } from '../actions'
+import { toggleTask, softDeleteTask, deleteTask } from '../actions/tasks'
+import { toggleSelectObject, toggleUpdateTask } from '../actions/ui'
 
 import IconClear from 'material-ui/svg-icons/content/clear';
 import IconDeleteForever from 'material-ui/svg-icons/action/delete-forever';

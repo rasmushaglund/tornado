@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux'
-import { toggleUpdateList } from '../actions'
+import { toggleUpdateList } from '../actions/ui'
 
 let AddList = ({ dialogVisible, currentList, dispatch }) => {
   let input

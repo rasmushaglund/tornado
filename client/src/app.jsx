@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import { fetchTasks, fetchContexts, fetchTags, fetchLists, fetchViews } from './actions'
+import { fetchTasks } from './actions/tasks'
+import { fetchContexts } from './actions/contexts'
+import { fetchTags } from './actions/tags'
+import { fetchLists } from './actions/lists'
+import { fetchViews } from './actions/views'
 import AddTask from './components/AddTask'
 import AddList from './components/AddList'
 import AddView from './components/AddView'

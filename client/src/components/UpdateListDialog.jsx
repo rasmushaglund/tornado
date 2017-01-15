@@ -4,7 +4,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import { connect } from 'react-redux'
-import { addList, updateList, softDeleteList, toggleUpdateList } from '../actions'
+import { addList, updateList, softDeleteList } from '../actions/lists'
+import { toggleUpdateList } from '../actions/ui'
 
 class UpdateListDialog extends React.Component {
   componentDidMount () {

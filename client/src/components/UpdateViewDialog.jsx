@@ -7,7 +7,8 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux'
-import { addView, updateView, toggleUpdateView, softDeleteView } from '../actions'
+import { addView, updateView, softDeleteView } from '../actions/views'
+import { toggleUpdateView } from '../actions/ui'
 
 class UpdateViewDialog extends React.Component {
   componentDidMount () {

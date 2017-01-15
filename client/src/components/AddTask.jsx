@@ -7,7 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import UpdateTaskDialog from './UpdateTaskDialog';
 
 import { connect } from 'react-redux'
-import { toggleUpdateTask } from '../actions'
+import { toggleUpdateTask } from '../actions/ui'
 
 let AddTask = ({ dialogVisible, currentTask, dispatch  }) => {
   let input

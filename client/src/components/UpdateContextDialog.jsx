@@ -4,7 +4,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import { connect } from 'react-redux'
-import { addContext, updateContext, softDeleteContext, toggleUpdateContext } from '../actions'
+import { addContext, updateContext, softDeleteContext } from '../actions/contexts'
+import { toggleUpdateContext } from '../actions/ui'
 
 class UpdateContextDialog extends React.Component {
  

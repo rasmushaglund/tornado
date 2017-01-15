@@ -12,7 +12,11 @@ import Chip from 'material-ui/Chip';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import { connect } from 'react-redux'
-import { addTask, addContext, addList, addTag, updateTask, toggleDeleteTask, toggleUpdateTask } from '../actions'
+import { addTask, updateTask, toggleDeleteTask } from '../actions/tasks'
+import { addContext } from '../actions/contexts'
+import { addList } from '../actions/lists'
+import { addTag } from '../actions/tags'
+import { toggleUpdateTask } from '../actions/ui'
 
 const dataSourceConfig = {
   text: 'textKey',

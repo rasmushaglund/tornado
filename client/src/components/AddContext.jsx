@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux'
-import { toggleUpdateContext } from '../actions'
+import { toggleUpdateContext } from '../actions/contexts'
 
 let AddContext = ({ dialogVisible, currentContext, dispatch }) => {
   let input

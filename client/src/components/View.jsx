@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 var _ = require("underscore");
 
 import { connect } from 'react-redux'
-import { toggleUpdateView, toggleSelectObject } from '../actions'
+import { toggleUpdateView, toggleSelectObject } from '../actions/ui'
 import TaskList from './TaskList'
 
 import  {CardHeader as UiCardHeader, CardText as UiCardText} from 'material-ui/Card'

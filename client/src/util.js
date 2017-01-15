@@ -39,3 +39,15 @@ export function sort(o, conditionsString) {
 
   return o
 }
+
+export const jsonFetch = (data, url, method = 'POST') => {
+  return fetch(url, {
+    method: method, 
+    body: JSON.stringify(data), 
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
