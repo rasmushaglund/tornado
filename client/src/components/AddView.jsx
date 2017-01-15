@@ -29,7 +29,7 @@ let AddView = ({ dialogVisible, currentView, dispatch }) => {
 
 const mapStateToProps = (state) => ({
   dialogVisible: state.ui.editViewVisible,
-  currentView: state.views[state.ui.currentView]
+  currentView: state.ui.currentView
 })
 
 AddView = connect(

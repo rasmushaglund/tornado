@@ -16,7 +16,7 @@ let View = ({ view, tasks, name, filter, selectedObject, dispatch }) => {
     <UiPaper style={{marginBottom: 40, border: selected ? "1px solid" : "none"}} zDepth={4}>
       <UiCardHeader title={view.name} subtitle={view.filter}
           onClick={() => dispatch(toggleSelectObject(view))}
-          onDoubleClick={() => dispatch(toggleSelectObject(view))}/>
+          onDoubleClick={() => dispatch(toggleUpdateView(view))}/>
         <TaskList tasks={tasks} />
     </UiPaper>
   )
