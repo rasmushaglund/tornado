@@ -27,10 +27,12 @@ let AddView = ({ dialogVisible, currentView, dispatch }) => {
   )
 }
 
-const mapStateToProps = (state) => ({
-  dialogVisible: state.ui.editViewVisible,
-  currentView: state.ui.currentView
-})
+const mapStateToProps = (state) => {
+
+  return {
+  dialogVisible: state.get('ui').get('editViewVisible'),
+  currentView: state.get('ui').get('currentView')
+}}
 
 AddView = connect(
   mapStateToProps

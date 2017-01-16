@@ -13,7 +13,7 @@ let AddTask = ({ dialogVisible, currentTask, dispatch  }) => {
   let input
 
   let openDialog = () =>  {
-    dispatch(toggleUpdateTask())
+    dispatch(toggleUpdateTask(true))
   }
 
   let label = currentTask ? "Edit Task" : "Add Task" 
@@ -28,8 +28,8 @@ let AddTask = ({ dialogVisible, currentTask, dispatch  }) => {
 }
 
 const mapStateToProps = (state) => ({
-  dialogVisible: state.ui.editTaskVisible,
-  currentTask: state.ui.currentTask
+  dialogVisible: state.get('ui').get('editTaskVisible'),
+  currentTask: state.get('ui').get('currentTask')
 })
 
 AddTask = connect(

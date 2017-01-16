@@ -1,30 +1,35 @@
 export const toggleSelectObject = (object) => ({
   type: 'TOGGLE_SELECT_OBJECT',
-  object
+  data: object
 })
 
-export const toggleUpdateContext = (context) => ({
+export const toggleUpdateContext = (visible, context) => ({
   type: 'TOGGLE_EDIT_CONTEXT',
-  context
+  context: context,
+  data: visible
 })
 
-export const toggleUpdateList = (list) => ({
+export const toggleUpdateList = (visible, list) => ({
   type: 'TOGGLE_EDIT_LIST',
-  list
+  list: list,
+  data: visible
 })
 
-export const toggleUpdateTag = (tag) => ({
+export const toggleUpdateTag = (visible, tag) => ({
   type: 'TOGGLE_EDIT_TAG',
-  tag
+  tag: tag,
+  data: visible
 })
 
-export const toggleUpdateTask = (task) => ({
+export const toggleUpdateTask = (visible, task) => ({
   type: 'TOGGLE_EDIT_TASK',
-  task
+  task: task,
+  data: visible
 })
 
-export const toggleUpdateView = (view) => ({
+export const toggleUpdateView = (visible, view) => ({
   type: 'TOGGLE_EDIT_VIEW',
-  view
+  view: view,
+  data: visible
 })
 

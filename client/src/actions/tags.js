@@ -13,66 +13,54 @@ export const fetchTags = () => (dispatch) => {
     .then(json => dispatch(receiveTags(json)))
 }
 
-export const addTag = (name) => {
+export const addTag = (data) => {
   const id = uuidV4()
-  
-  jsonFetch({
-      id: id,
-      name: name
-    },
+  data = {...data, id: id}
+
+  jsonFetch(data,
     'http://localhost:5000/tags'
   )
 
   return {
     type: 'ADD_TAG',
-    id: id,
-    name
+    data: data
   }
 }
 
-export const updateTag = (id, name) => {
-  jsonFetch({
-      id: id,
-      name: name
-    },
+export const updateTag = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/tags',
     'PUT'
   )
 
   return {
     type: 'UPDATE_TAG',
-    id: id,
-    name
+    data: data
   }
 }
 
-export const softDeleteTag = (id, deleted = true) => {
-  jsonFetch({
-      id: id,
-      deleted: deleted
-    },
+export const softDeleteTag = (data) => {
+  data = {...data, deleted: true}
+  jsonFetch(data,
     'http://localhost:5000/tags',
     'PUT'
   )
 
   return {
     type: 'SOFT_DELETE_TAG',
-    id,
-    deleted
+    data: data
   }
 }
 
-export const deleteTag = (id) => {
-  jsonFetch({
-      id: id
-    },
+export const deleteTag = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/tags',
     'DELETE'
   )
 
   return {
     type: 'DELETE_TAG',
-    id
+    data: data
   }
 }
 

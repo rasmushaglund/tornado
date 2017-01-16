@@ -1,43 +1,49 @@
+import { Map } from 'immutable'
+import Context from '../models/context'
 var _ = require("underscore");
+
+const initialState = Map()
+
+const addContext = (data) => {
+  return new Context({
+    id: data.id,
+    name: data.name,
+    deleted: data.deleted
+  })
+}
 
 const context = (state, action) => {
   switch (action.type) {
     case "UPDATE_CONTEXT":
-      return {
+      return new Context({
         ...state,
         name: action.name
-      }
-    case "ADD_CONTEXT":
-      console.log("Adding context with text " + action.name)
-
-      return {
-        id: action.id,
-        name: action.name
-      }
+      })
     case "TOGGLE_DELETE_CONTEXT":
-      return {
+      return new Context({
         ...state,
         deleted: action.deleted === undefined || action.deleted
-      }
+      })
     default:
-      return state
+      console.error('Invalid context action')
   }
 }
 
-const contexts = (state = [], action) => {
-  let actions = ['ADD_CONTEXT', 'UPDATE_CONTEXT', 'TOGGLE_DELETE_CONTEXT']
-
-  if (_.contains(actions, action.type)) {
-    return {
-      ...state,
-      [action.id]: context(state[action.id], action)
-    }
+const contexts = (state = initialState, action) => {
+  if (_.contains(['UPDATE_CONTEXT', 'TOGGLE_DELETE_CONTEXT'], action)) {
+    return state.update(action.id, 
+      c => context(c, action)
+    )
+  } else if (action.type === 'ADD_VIEW') {
+    return state.set(action.id, addView(action))
+  } else if (action.type === 'DELETE_VIEW') {
+    return state.delete(action.id)
   } else if (action.type === 'RECEIVE_CONTEXTS') {
-    return _.object(_.map(action.contexts, data => {
-      return [data.id, context(data, 'ADD_CONTEXT')]
-    }))
+    return Map(action.contexts.map(
+      (data, index) => [data.id, addContext(data)]
+    ))    
   } else {
-      return state
+    return state
   }
 }
 

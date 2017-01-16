@@ -1,4 +1,6 @@
 import React from 'react';
+import Redbox from 'redbox-react'
+import { Map, fromJS } from 'immutable'
 import { render } from 'react-dom';
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
@@ -12,15 +14,18 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 injectTapEventPlugin();
 
-const middleware = [ thunk ]
-const store = createStore(reducer, applyMiddleware(...middleware))
+const middleware = [ thunk, createLogger({
+  collapsed: true,
+  stateTransformer: state => state.toJS()
+}) ]
 
-if (process.env.NODE_ENV !== 'production') {
-  middleware.push(createLogger())
-}
+const store = createStore(
+  reducer,
+  applyMiddleware(...middleware)
+)
 
 render(
-  <AppContainer>
+  <AppContainer errorReporter={Redbox}>
     <Provider store={store}>
       <MuiThemeProvider>
         <App/>
@@ -30,9 +35,21 @@ render(
   document.querySelector("#app"));
 
 if (module && module.hot) {
+  module.hot.accept('./reducers', function () {
+    console.log('Store updated. Replacing root reducer');
+    try {
+      var newReducer = require('./reducers');
+      store.replaceReducer(newReducer);
+    } catch (err) {
+      console.error('Error updating store', err);
+    }
+  });
   module.hot.accept('./app.jsx', () => {
+    const App = require('./app.jsx').default
+
+    try {
     render(
-      <AppContainer>
+      <AppContainer errorReporter={Redbox}>
         <Provider store={store}>
           <MuiThemeProvider>
             <App/>
@@ -41,5 +58,8 @@ if (module && module.hot) {
       </AppContainer>,
       document.querySelector("#app")
     );
+    } catch (err) {
+      console.err(err)
+    }
   });
 }

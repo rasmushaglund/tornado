@@ -28,8 +28,8 @@ let AddList = ({ dialogVisible, currentList, dispatch }) => {
 }
 
 const mapStateToProps = (state) => ({
-  dialogVisible: state.ui.editListVisible,
-  currentList: state.lists[state.ui.currentList]
+  dialogVisible: state.get('ui').get('editListVisible'),
+  currentList: state.get('lists').get(state.get('ui').get('currentList'))
 })
 
 AddList = connect(

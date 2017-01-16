@@ -14,8 +14,8 @@ const viewsStyle = {
 
 let Views = ({ views }) => (
   <div style={viewsStyle}>
-    {_.map(views, view =>
-      <View key={view.id}
+    {views.valueSeq().map(view =>
+      <View key={view.get('id')}
         view={view}
       />
     )}
@@ -23,7 +23,7 @@ let Views = ({ views }) => (
 )
 
 const mapStateToProps = (state) => ({
-  views: _.filter(state.views, (view) => !view.deleted)
+  views: state.get('views').filter(view => !view.get('deleted'))
 })
 
 const mapDispatchToProps =  ({

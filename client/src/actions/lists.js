@@ -13,66 +13,54 @@ export const fetchLists = () => (dispatch) => {
     .then(json => dispatch(receiveLists(json)))
 }
 
-export const addList = (name) => {
+export const addList = (data) => {
   const id = uuidV4()
+  data = {...data, id: id}
   
-  jsonFetch({
-      id: id,
-      name: name
-    },
+  jsonFetch(data,
     'http://localhost:5000/lists'
   )
 
   return {
     type: 'ADD_LIST',
-    id: id,
-    name
+    data: data
   }
 }
 
-export const updateList = (id, name) => {
-  jsonFetch({
-      id: id,
-      name: name
-    },
+export const updateList = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/lists',
     'PUT'
   )
 
   return {
     type: 'UPDATE_LIST',
-    id: id,
-    name
+    data: data
   }
 }
 
-export const softDeleteList = (id, deleted = true) => {
-  jsonFetch({
-      id: id,
-      deleted: deleted
-    },
+export const softDeleteList = (data) => {
+  data = {...data, deleted: true}
+  jsonFetch(data,
     'http://localhost:5000/lists',
     'PUT'
   )
 
   return {
     type: 'SOFT_DELETE_LIST',
-    id,
-    deleted
+    data: data,
   }
 }
 
-export const deleteList = (id) => {
-  jsonFetch({
-      id: id
-    },
+export const deleteList = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/lists',
     'DELETE'
   )
 
   return {
     type: 'DELETE_LIST',
-    id
+    data: data
   }
 }
 

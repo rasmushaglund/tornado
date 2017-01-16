@@ -27,8 +27,8 @@ let AddContext = ({ dialogVisible, currentContext, dispatch }) => {
 }
 
 const mapStateToProps = (state) => ({
-  dialogVisible: state.ui.editContextVisible,
-  currentContext: state.contexts[state.ui.currentContext]
+  dialogVisible: state.get('ui').get('editContextVisible'),
+  currentContext: state.get('contexts').get(state.get('ui').get('currentContext'))
 })
 
 AddContext = connect(

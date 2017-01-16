@@ -1,4 +1,5 @@
 import React from 'react'
+import { Set } from 'immutable'
 var _ = require("underscore");
 var trim = require("underscore.string/trim");
 
@@ -45,7 +46,7 @@ class UpdateTaskDialog extends React.Component {
       let taskTags = []
       let taskContexts = []
       
-      _.each(selectedObject.tasks, (task) => {
+      selectedObject.has('tasks') && selectedObject.get('tasks').forEach(task => {
         taskLists.push(task.lists)
         taskTags.push(task.tags)
         taskContexts.push(task.contexts)
@@ -57,18 +58,18 @@ class UpdateTaskDialog extends React.Component {
     }
 
     this.state = {
-      tags: props.task && props.task.tags || commonTags || [],
-      contexts: props.task && props.task.contexts || commonContexts || [],
-      lists: props.task && props.task.lists || commonLists || [],
-      contextDataSource: _.map(props.contexts, (context) => {
+      tags: new Set(props.task && props.task.tags || commonTags || []),
+      contexts: new Set(props.task && props.task.contexts || commonContexts || []),
+      lists: new Set(props.task && props.task.lists || commonLists || []),
+      contextDataSource: props.contexts.map(context => {
         return {textKey: context.name, valueKey: context.id}
-      }),
-      listDataSource: _.map(props.lists, (list) => {
+      }).toArray(),
+      listDataSource: props.lists.map(list => {
         return {textKey: list.name, valueKey: list.id}
-      }),
-      tagDataSource: _.map(props.tags, (tag) => {
+      }).toArray(),
+      tagDataSource: props.tags.map(tag => {
         return {textKey: tag.name, valueKey: tag.id}
-      }),
+      }).toArray(),
       contextSearchText: '',
       listSearchText: '',
       tagSearchText: '',
@@ -85,23 +86,24 @@ class UpdateTaskDialog extends React.Component {
   }
 
   handleListDelete = (id, input) => {
-    this.setState({lists: _.without(this.state.lists, id)})
+    this.setState({lists: this.state.lists.delete(id)})
   }
 
   handleContextDelete = (id) => {
-    this.setState({contexts: _.without(this.state.contexts, id)})
+    this.setState({contexts: this.state.contexts.delete(id)})
   }
 
   handleTagDelete = (id) => {
-    this.setState({tags: _.without(this.state.tags, id)})
+    this.setState({tags: this.state.tags.delete(id)})
   }
 
   handleContextSelect = (name, index) => {
     if (index >= 0) {
       let context = this.state.contextDataSource[index]
-      let newContexts = this.state.contexts.slice()
-      newContexts.push(context.valueKey)
-      this.setState({contexts: newContexts, contextSearchText: ''})
+      this.setState({
+        contexts: this.state.contexts.add(context.valueKey), 
+        contextSearchText: ''
+      })
       this.contextInput.focus()
     }
   }
@@ -109,9 +111,10 @@ class UpdateTaskDialog extends React.Component {
   handleListSelect = (name, index) => {
     if (index >= 0) {
       let list = this.state.listDataSource[index]
-      let newLists = this.state.lists.slice()
-      newLists.push(list.valueKey)
-      this.setState({lists: newLists, listSearchText: ''})
+      this.setState({
+        lists: this.state.lists.add(list.valueKey), 
+        listSearchText: ''
+      })
       this.listInput.focus()
     }
   }
@@ -119,22 +122,21 @@ class UpdateTaskDialog extends React.Component {
   handleTagSelect = (name, index) => {
     if (index >= 0) {
       let tag = this.state.tagDataSource[index]
-      let newTags = this.state.tags.slice()
-      newTags.push(tag.valueKey)
-      this.setState({tags: newTags, tagSearchText: ''})
+      this.setState({
+        tags: this.state.tags.add(tag.valueKey), 
+        tagSearchText: ''
+      })
       this.tagInput.focus()
     }
   }
-
 
   handleContextInput = (s) => {
     let parts = s.split(",")
 
     if (parts.length > 1 && parts[0].length > 0) {
       let newContext
-      let newContexts = this.state.contexts.slice()
       let contextString = parts[0].trim()
-      let existingContext = _.find(this.state.contextDataSource, (context) => context.textKey === contextString)
+      let existingContext = _.find(this.state.contextDataSource, context => context.textKey === contextString)
 
       if (existingContext) {
         newContext = {id: existingContext.valueKey}
@@ -143,8 +145,10 @@ class UpdateTaskDialog extends React.Component {
         this.props.dispatch(newContext)
       }
 
-      newContexts.push(newContext.id)
-      this.setState({contexts: newContexts, contextSearchText: ''})
+      this.setState({
+        contexts: this.state.contexts.add(newContext.id), 
+        contextSearchText: ''
+      })
       this.contextInput.refs.searchTextField.input.value = ''
       this.contextInput.close()
     } else {
@@ -157,9 +161,8 @@ class UpdateTaskDialog extends React.Component {
 
     if (parts.length > 1 && parts[0].length > 0) {
       let newList
-      let newLists = this.state.lists.slice()
       let listString = parts[0].trim()
-      let existingList = _.find(this.state.listDataSource, (list) => list.textKey === listString)
+      let existingList = _.find(this.state.listDataSource, list => list.textKey === listString)
 
       if (existingList) {
         newList = {id: existingList.valueKey}
@@ -168,8 +171,10 @@ class UpdateTaskDialog extends React.Component {
         this.props.dispatch(newList)
       }
 
-      newLists.push(newList.id)
-      this.setState({lists: newLists, listSearchText: ''})
+      this.setState({
+        lists: this.state.lists.add(newList), 
+        listSearchText: ''
+      })
       this.listInput.refs.searchTextField.input.value = ''
       this.listInput.close()
     } else {
@@ -182,9 +187,8 @@ class UpdateTaskDialog extends React.Component {
 
     if (parts.length > 1 && parts[0].length > 0) {
       let newTag
-      let newTags = this.state.tags.slice()
       let tagString = parts[0].trim()
-      let existingTag = _.find(this.state.tagDataSource, (tag) => tag.textKey === tagString)
+      let existingTag = _.find(this.state.tagDataSource, tag => tag.textKey === tagString)
 
       if (existingTag) {
         newTag = {id: existingTag.valueKey}
@@ -193,8 +197,10 @@ class UpdateTaskDialog extends React.Component {
         this.props.dispatch(newTag)
       }
 
-      newTags.push(newTag.id)
-      this.setState({tags: newTags, tagSearchText: ''})
+      this.setState({
+        tags: this.state.tags.add(newTag), 
+        tagSearchText: ''
+      })
       this.tagInput.refs.searchTextField.input.value = ''
       this.tagInput.close()
     } else {
@@ -223,32 +229,32 @@ class UpdateTaskDialog extends React.Component {
     ) : null;
 
     let taskContexts = this.state.contexts.map((contextId) => {
-        let context = _.find(contexts, (c) => c.id === contextId)
+        let context = contexts.get(contextId)
 
         return context && (
           <Chip key={context.id} style={styles.chip} 
           onRequestDelete={() => this.handleContextDelete(contextId)}>{context.name}</Chip>
         )
-    });
+    }).toArray();
 
     let taskLists = this.state.lists.map((listId) => {
-        let list = _.find(lists, (l) => l.id === listId)
+        let list = lists.get(listId)
 
         return list && (
           <Chip key={list.id} style={styles.chip} 
             onRequestDelete={() => this.handleListDelete(listId)}
             labelStyle={{textDecoration: list.deleted ? 'line-through' : 'none'}}>{list.name}</Chip>
         )
-    });
+    }).toArray();
 
     let taskTags = this.state.tags.map((tagId) => {
-        let tag = _.find(tags, (c) => c.id === tagId)
+        let tag = tags.get(tagId)
 
         return tag && (
           <Chip key={tag.id} style={styles.chip} 
           onRequestDelete={() => this.handleTagDelete(tagId)}>{tag.name}</Chip>
         )
-    });
+    }).toArray();
 
     return (
       <Dialog
@@ -404,11 +410,11 @@ class UpdateTaskDialog extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  tasks: state.tasks,
-  lists: state.lists,
-  contexts: state.contexts,
-  tags: state.tags,
-  selectedObject: state.ui.selectedObject
+  tasks: state.get('tasks'),
+  lists: state.get('lists'),
+  contexts: state.get('contexts'),
+  tags: state.get('tags'),
+  selectedObject: state.get('ui').get('selectedObject')
 })
 
 UpdateTaskDialog = connect(

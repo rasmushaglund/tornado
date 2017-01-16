@@ -58,7 +58,7 @@ class Task extends React.Component {
           actions
         }
         onClick={()=> this.props.toggleSelectObject(task)}
-        onDoubleClick={() => this.props.toggleUpdateTask(task)} />
+        onDoubleClick={() => this.props.toggleUpdateTask(true, task)} />
     )
   }
 }
@@ -68,7 +68,7 @@ let TaskList = ({ tasks, toggleTask, toggleUpdateTask, toggleSelectObject, delet
  
   return (
     <UiList>
-      {tasks && sort(tasks, "completed, name").map(task =>
+      {!tasks.isEmpty() && sort(tasks, "completed, name").valueSeq().map(task =>
         <Task task={task}
           key={task.id}
           toggleTask={toggleTask}
@@ -79,14 +79,6 @@ let TaskList = ({ tasks, toggleTask, toggleUpdateTask, toggleSelectObject, delet
       )}
     </UiList>
   )
-}
-
-TaskList.propTypes = {
-  tasks: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired
-  }).isRequired),
 }
 
 const mapStateToProps = (state) => ({

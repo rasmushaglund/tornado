@@ -13,70 +13,52 @@ export const fetchViews = () => (dispatch) => {
     .then(json => dispatch(receiveViews(json)))
 }
 
-export const addView = (name, filter) => {
+export const addView = (data) => {
   const id = uuidV4()
-  
-  jsonFetch({
-      id: id,
-      name: name,
-      filter: filter
-    },
+
+  jsonFetch(data,
     'http://localhost:5000/views'
   )
 
   return {
     type: 'ADD_VIEW',
-    id: id,
-    name,
-    filter
+    data: data
   }
 }
 
-export const updateView = (id, name, filter) => {
-  jsonFetch({
-      id: id,
-      name: name,
-      filter: filter
-    },
+export const updateView = (data) => {  
+  jsonFetch(data,
     'http://localhost:5000/views',
     'PUT'
   )
 
   return {
     type: 'UPDATE_VIEW',
-    id: id,
-    name,
-    filter
+    data: data
   }
 }
 
-export const softDeleteView = (id, deleted = true) => {
-  jsonFetch({
-      id: id,
-      deleted: deleted
-    },
+export const softDeleteView = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/views',
     'PUT'
   )
   
   return {
     type: 'SOFT_DELETE_VIEW',
-    id,
-    deleted
+    data: data
   }
 }
 
-export const deleteView = (id) => {
-  jsonFetch({
-      id: id
-    },
+export const deleteView = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/views',
     'DELETE'
   )
 
   return {
     type: 'DELETE_VIEW',
-    id
+    data: data
   }
 }
 

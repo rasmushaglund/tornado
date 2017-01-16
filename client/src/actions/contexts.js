@@ -13,66 +13,55 @@ export const fetchContexts = () => (dispatch) => {
     .then(json => dispatch(receiveContexts(json)))
 }
 
-export const addContext = (name) => {
+export const addContext = (data) => {
   const id = uuidV4()
-  
-  jsonFetch({
-      id: id,
-      name: name
-    },
+  data = {...data, id: id}
+
+  jsonFetch(data,
     'http://localhost:5000/contexts'
   )
 
   return {
     type: 'ADD_CONTEXT',
-    id: id,
-    name
+    data: data
   }
 }
 
-export const updateContext = (id, name) => {
-  jsonFetch({
-      id: id,
-      name: name
-    },
+export const updateContext = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/contexts',
     'PUT'
   )
 
   return {
     type: 'UPDATE_CONTEXT',
-    id: id,
-    name
+    data: data
   }
 }
 
-export const softDeleteContext = (id, deleted = true) => {
-  jsonFetch({
-      id: id,
-      deleted: deleted
-    },
+export const softDeleteContext = (data) => {
+  data = {...data, deleted: true}
+
+  jsonFetch(data,
     'http://localhost:5000/contexts',
     'PUT'
   )
 
   return {
     type: 'SOFT_DELETE_CONTEXT',
-    id,
-    deleted
+    data: data
   }
 }
 
-export const deleteContext = (id) => {
-  jsonFetch({
-      id: id
-    },
+export const deleteContext = (data) => {
+  jsonFetch(data,
     'http://localhost:5000/contexts',
     'DELETE'
   )
 
   return {
     type: 'DELETE_CONTEXT',
-    id
+    data: data
   }
 }
 

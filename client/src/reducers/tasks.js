@@ -1,69 +1,64 @@
+import { Map } from 'immutable'
+import Task from '../models/task'
 var _ = require("underscore");
 
+const initialState = Map()
+
+const addTask = (data) => {
+  return new Task({
+    id: data.id,
+    completed: data.completed,
+    name: data.name,
+    description: data.description,
+    lists: data.lists,
+    tags: data.tags,
+    contexts: data.contexts,
+    importance: data.importance,
+    deadline: data.deadline,
+    time: data.time,
+    energy: data.energy,
+    deleted: data.deleted
+  })
+}
+
+// TODO kan vi skippa att bara mappa? kan vi inte bara ta ...state, ...action? vill ju inte andra id
+// TODO switch istallet?
 
 const task = (state, action) => {
   switch (action.type) {
     case "UPDATE_TASK":
-      return {
+      return new Task({
         ...state,
         name: action.name,
         description: action.description,
         lists: action.lists,
+        completed: action.completed,
         tags: action.tags,
         contexts: action.contexts,
         importance: action.importance,
         deadline: action.deadline,
         time: action.time,
+        deleted: action.deleted,
         energy: action.energy
-      }
-    case "ADD_TASK":
-      return {
-        ...state,
-        id: action.id,
-        completed: false,
-        name: action.name,
-        description: action.description,
-        lists: action.lists,
-        tags: action.tags,
-        contexts: action.contexts,
-        importance: action.importance,
-        deadline: action.deadline,
-        time: action.time,
-        energy: action.energy
-      }
-    case "TOGGLE_TASK":
-      return {
-        ...state,
-        completed: !state.completed
-      }
-    case "SOFT_DELETE_TASK":
-      return {
-        ...state,
-        deleted: action.deleted === undefined || action.deleted
-      }
+      })
     default:
-      return state
+      console.log('Invalid task action')
   }
 }
 
-const tasks = (state = [], action) => {
-  if (_.contains(['ADD_TASK', 'UPDATE_TASK', 'SOFT_DELETE_TASK', 'TOGGLE_TASK'], action.type)) {
-    return {
-      ...state,
-      [action.id]: task(state[action.id], action)
-    }
-  } else if (_.contains(['DELETE_TASK'], action.type)) {
-    return _.filter(state, task =>
-        task.id !== action.id
-      )
-  } else if (action.type === 'DELETE_LIST') {
-    return _.mapObject(state, (task, key) => {
-      return Object.assign({}, task, {lists: _.without(task.lists, action.id)})
-    })
+const tasks = (state = initialState, action) => {
+  if (_.contains(['UPDATE_TASK'], action.type)) {
+    return state.update(action.id, 
+      t => task(state[action.id], action)
+    )
+  } else if (action.type === 'ADD_TASK') {
+    return state.set(action.id, addTask(action))
+  } else if (_.contains(['DELETE_TASK'], action)) {
+    return state.delete(action.id)
   } else if (action.type === 'RECEIVE_TASKS') {
-    return _.object(_.map(action.tasks, data => {
-      return [data.id, task(data, 'ADD_TASK')]
-    }))
+    return Map(action.tasks.map(
+      (data, index) => [data.id, addTask(data)]
+    ))
   } else {
     return state
   }

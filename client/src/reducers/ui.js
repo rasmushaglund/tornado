@@ -1,48 +1,49 @@
-const initialState = {
+import Immutable from 'immutable'
+
+const initialState = Immutable.fromJS({
   editViewVisible: false,
   editTaskVisible: false,
-  selectedObject: null,
   editListVisible: false,
-  editContextVisible: false
-}
+  editContextVisible: false,
+  currentView: null,
+  currentList: null,
+  currentTask: null,
+  currentContext: null,
+  selectedObject: null,
+})
 
 const ui = (state = initialState, action) => {
   switch (action.type) {
     case "TOGGLE_EDIT_VIEW":
-      return {
-        ...state,
-        editViewVisible: !state.editViewVisible,
+      return state.merge({
+        editViewVisible: action.visible,
         currentView: action.view
-      }
+      })
     case "TOGGLE_EDIT_TASK":
-      return {
-        ...state,
-        editTaskVisible: !state.editTaskVisible,
+      return state.merge({
+        editTaskVisible: action.visible,
         currentTask: action.task
-      }
+      })
     case "TOGGLE_EDIT_LIST":
-      return {
-        ...state,
-        editListVisible: !state.editListVisible,
+      return state.merge({
+        editListVisible: action.visible,
         currentList: action.list
-      }
+      })
     case "TOGGLE_EDIT_CONTEXT":
-      return {
-        ...state,
-        editContextVisible: !state.editContextVisible,
+      return state.merge({
+        editContextVisible: action.visible,
         currentContext: action.context
-      }
+      })
     case "TOGGLE_SELECT_OBJECT":
       let newSelectedObject
-      if (!state.selectedObject || action.object && 
-        state.selectedObject.id !== action.object.id) {
+      if (!state.get('selectedObject') || action.object && 
+        state.get('selectedObject').get('id') !== action.object.get('id')) {
         newSelectedObject = action.object
       }
 
-      return {
-        ...state,
+      return state.merge({
         selectedObject: newSelectedObject
-      }
+      })
     default:
       return state
   }
