@@ -25,7 +25,7 @@ class UpdateListDialog extends React.Component {
       <FlatButton
         label="Delete"
         onTouchTap={() => {
-          dispatch(softDeleteList(list.id))
+          dispatch(softDeleteList(list))
           closeDialog()
         }}
         secondary={true}
@@ -46,9 +46,9 @@ class UpdateListDialog extends React.Component {
           }
 
           if (list) {
-            dispatch(updateList(list.id, this.textInput.value))
+            dispatch(updateList(list.merge({name: this.textInput.value})))
           } else {
-            dispatch(addList(this.textInput.value))
+            dispatch(addList({name: this.textInput.value}))
           }
 
           closeDialog()

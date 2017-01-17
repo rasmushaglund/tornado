@@ -352,37 +352,28 @@ class UpdateTaskDialog extends React.Component {
             }
           
             //pp.applet deadline = moment(this.state.deadline).format('ddd, DD MMM YYYY HH:mm:ss ZZ')
+            let taskData = {
+              name: this.textInput.input.value, 
+              description: this.descriptionInput.input.value, 
+              lists: this.state.lists, 
+              contexts: this.state.contexts, 
+              tags: this.state.tags,
+              time: this.timeInput.input.value, 
+              importance: this.importanceInput.input.value, 
+              deadline: deadlineDate, 
+              energy: this.energyInput.input.value
+            }
 
             if (task) {
               dispatch(
-                updateTask({
-                  id: task.id, 
-                  name: this.textInput.input.value, 
-                  description: this.descriptionInput.input.value, 
-                  lists: this.state.lists, 
-                  contexts: this.state.contexts, 
-                  tags: this.state.tags,
+                updateTask(task.merge({
                   completed: this.state.completed,
                   deleted: this.state.deleted,
-                  time: this.timeInput.input.value, 
-                  importance: this.importanceInput.input.value, 
-                  deadline: deadlineDate, 
-                  energy: this.energyInput.input.value
-                })
+                }))
               )
             } else {
               dispatch(
-                addTask({
-                  name: this.textInput.input.value, 
-                  description: this.descriptionInput.input.value, 
-                  lists: this.state.lists, 
-                  contexts: this.state.contexts, 
-                  tags: this.state.tags, 
-                  time: this.timeInput.input.value, 
-                  importance: this.importanceInput.input.value, 
-                  deadline: deadlineDate, 
-                  energy: this.energyInput.input.value
-                })
+                addTask(taskData)
               )
             }
 

@@ -27,40 +27,31 @@ export const addTag = (data) => {
   }
 }
 
-export const updateTag = (data) => {
-  jsonFetch(data,
+export const updateTag = (tag) => {
+  jsonFetch(tag,
     'http://localhost:5000/tags',
     'PUT'
   )
 
   return {
     type: 'UPDATE_TAG',
-    data: data
+    tag: tag
   }
 }
 
 export const softDeleteTag = (data) => {
-  data = {...data, deleted: true}
-  jsonFetch(data,
-    'http://localhost:5000/tags',
-    'PUT'
-  )
-
-  return {
-    type: 'SOFT_DELETE_TAG',
-    data: data
-  }
+  return updateTag(tag.merge({deleted: true}))
 }
 
-export const deleteTag = (data) => {
-  jsonFetch(data,
+export const deleteTag = (tag) => {
+  jsonFetch({id: tag.id},
     'http://localhost:5000/tags',
     'DELETE'
   )
 
   return {
     type: 'DELETE_TAG',
-    data: data
+    tag: tag
   }
 }
 

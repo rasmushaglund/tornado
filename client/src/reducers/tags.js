@@ -1,8 +1,5 @@
 import { Map } from 'immutable'
 import Tag from '../models/tag'
-var _ = require("underscore");
-
-const initialState = Map()
 
 const addTag = (data) => {
   return new Tag({
@@ -12,38 +9,22 @@ const addTag = (data) => {
   })
 }
 
-const tag = (state, action) => {
+const tags = (state = Map(), action) => {
   switch (action.type) {
-    case "UPDATE_TAG":
-      return new Tag({
-        ...state,
-        name: action.name
-      })
-    case "TOGGLE_DELETE_TAG":
-      return new Tag({
-        ...state,
-        deleted: action.deleted === undefined || action.deleted
-      })
+    case 'UPDATE_TAG':
+      return state.update(action.tag.id, 
+        t => action.tag
+      )
+    case 'ADD_TAG':
+      return state.set(action.data.id, addTag(action.data))
+    case 'DELETE_TAG':
+      return state.delete(action.tag.id)
+    case 'RECEIVE_TAGS':
+      return Map(action.tags.map(
+        (data, intex) => [data.id, addTag(data)]
+      ))
     default:
-      console.error('Invalid tag action')
-  }
-}
-
-const tags = (state = initialState, action) => {
-  if (_.contains(['UPDATE_TAG', 'TOGGLE_DELETE_TAG'], action)) {
-    return state.update(action.id, 
-      t => tag(state[action.id], action)
-    )
-  } else if (action.type === 'ADD_TAG') {
-    return state.set(action.id, addTag(action))
-  } else if (action.type === 'DELETE_TAG') {
-    return state.delete(action.id)
-  } else if (action.type === 'RECEIVE_TAGS') {
-    return Map(action.tags.map(
-      (data, intex) => [data.id, addTag(data)]
-    ))
-  } else {
-    return state
+      return state
   }
 }
 

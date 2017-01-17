@@ -27,41 +27,31 @@ export const addContext = (data) => {
   }
 }
 
-export const updateContext = (data) => {
-  jsonFetch(data,
+export const updateContext = (context) => {
+  jsonFetch(context,
     'http://localhost:5000/contexts',
     'PUT'
   )
 
   return {
     type: 'UPDATE_CONTEXT',
-    data: data
+    context: context
   }
 }
 
-export const softDeleteContext = (data) => {
-  data = {...data, deleted: true}
-
-  jsonFetch(data,
-    'http://localhost:5000/contexts',
-    'PUT'
-  )
-
-  return {
-    type: 'SOFT_DELETE_CONTEXT',
-    data: data
-  }
+export const softDeleteContext = (context) => {
+  return updateContext(context.merge({deleted: true}))
 }
 
-export const deleteContext = (data) => {
-  jsonFetch(data,
+export const deleteContext = (context) => {
+  jsonFetch({id: context.id},
     'http://localhost:5000/contexts',
     'DELETE'
   )
 
   return {
     type: 'DELETE_CONTEXT',
-    data: data
+    context: context
   }
 }
 

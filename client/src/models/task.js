@@ -24,10 +24,4 @@ class Task extends Record({
   }
 }
 
-// Task.prototype.,,,
-
-Task.fromData = (data) => {
-  return new Task(data)
-}
-
 export default Task

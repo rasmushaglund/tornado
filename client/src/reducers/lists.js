@@ -1,8 +1,5 @@
 import { Map } from 'immutable'
 import List from '../models/list'
-var _ = require("underscore");
-
-const initialState = Map()
 
 const addList = (data) => {
   return new List({
@@ -12,38 +9,22 @@ const addList = (data) => {
   })
 }
 
-const list = (state, action) => {
+const lists = (state = Map(), action) => {
   switch (action.type) {
-    case "UPDATE_LIST":
-      return new List({
-        ...state,
-        name: action.name
-      })
-    case "SOFT_DELETE_LIST":
-      return new List({
-        ...state,
-        deleted: action.deleted === undefined || action.deleted
-      })
+    case 'UPDATE_LIST':
+      return state.update(action.list.id, 
+        l => action.list
+      )
+    case 'ADD_LIST':
+      return state.set(action.data.id, addList(action.data))
+    case 'DELETE_LIST':
+      return state.delete(action.list.id)
+    case 'RECEIVE_LISTS':
+      return Map(action.lists.map(
+        (data, index) => [data.id, addList(data)]
+      ))
     default:
-      console.error('Invalid list action')
-  }
-}
-
-const lists = (state = initialState, action) => {
-  if (_.contains(['UPDATE_LIST', 'SOFT_DELETE_LIST'], action.type)) {
-    return state.update(action.id, 
-      l => list(l, action)
-    )
-  } else if (action.type === 'ADD_LIST') {
-    return state.set(action.id, addList(action))
-  } else if (_.contains(['DELETE_LIST'], action.type)) {
-    return state.delete(action.id)
-  } else if (action.type === 'RECEIVE_LISTS') {
-    return Map(action.lists.map(
-      (data, index) => [data.id, addList(data)]
-    ))
-  } else {
-    return state
+      return state
   }
 }
 

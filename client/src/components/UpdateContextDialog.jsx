@@ -23,7 +23,7 @@ class UpdateContextDialog extends React.Component {
       <FlatButton
         label="Delete"
         onTouchTap={() => {
-          dispatch(softDeleteContext(context.id))
+          dispatch(softDeleteContext(context))
           closeDialog()
         }}
         secondary={true}
@@ -44,9 +44,9 @@ class UpdateContextDialog extends React.Component {
           }
 
           if (context) {
-            dispatch(updateContext(context.id, textInput.value))
+            dispatch(updateContext(context.merge({name: textInput.value})))
           } else {
-            dispatch(addContext(textInput.value))
+            dispatch(addContext({name: textInput.value}))
           }
 
           closeDialog()

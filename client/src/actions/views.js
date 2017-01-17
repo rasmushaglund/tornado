@@ -15,6 +15,7 @@ export const fetchViews = () => (dispatch) => {
 
 export const addView = (data) => {
   const id = uuidV4()
+  data = {...data, id: id}
 
   jsonFetch(data,
     'http://localhost:5000/views'
@@ -26,39 +27,31 @@ export const addView = (data) => {
   }
 }
 
-export const updateView = (data) => {  
-  jsonFetch(data,
+export const updateView = (view) => {  
+  jsonFetch(view,
     'http://localhost:5000/views',
     'PUT'
   )
 
   return {
     type: 'UPDATE_VIEW',
-    data: data
+    view: view
   }
 }
 
-export const softDeleteView = (data) => {
-  jsonFetch(data,
-    'http://localhost:5000/views',
-    'PUT'
-  )
-  
-  return {
-    type: 'SOFT_DELETE_VIEW',
-    data: data
-  }
+export const softDeleteView = (view) => {
+  return updateView(view.merge({deleted: !view.deleted}))
 }
 
-export const deleteView = (data) => {
-  jsonFetch(data,
+export const deleteView = (view) => {
+  jsonFetch({id: view.id},
     'http://localhost:5000/views',
     'DELETE'
   )
 
   return {
     type: 'DELETE_VIEW',
-    data: data
+    view: view
   }
 }
 

@@ -1,8 +1,5 @@
 import { Map } from 'immutable'
 import View from '../models/view'
-var _ = require("underscore");
-
-const initialState = Map()
 
 const addView = (data) => {
   return new View({
@@ -13,39 +10,22 @@ const addView = (data) => {
   })
 }
 
-const view = (state, action) => {
+const views = (state = Map(), action) => {
   switch (action.type) {
-    case "UPDATE_VIEW":
-      return new View({
-        ...state,
-        name: action.name,
-        filter: action.filte
-      })
-    case "SOFT_DELETE_VIEW":
-      return new View({
-        ...state,
-        deleted: action.deleted === undefined || action.deleted
-      })
+    case 'UPDATE_VIEW':
+      return state.update(action.view.id, 
+        v => action.view
+      )
+    case 'ADD_VIEW':
+      return state.set(action.data.id, addView(action.data))
+    case 'DELETE_VIEW':
+      return state.delete(action.view.id)
+    case 'RECEIVE_VIEWS':
+      return Map(action.views.map(
+        (data, index) => [data.id, addView(data)]
+      ))
     default:
-      console.error('Invalid view action')
-  }
-}
-
-const views = (state = initialState, action) => {
-  if (_.contains(['UPDATE_VIEW', 'SOFT_DELETE_VIEW'], action.type)) {
-    return state.update(action.id, 
-      v => view(v, action)
-    )
-  } else if (action.type === 'ADD_VIEW') {
-    return state.set(action.id, addView(action))
-  } else if (_.contains(['DELETE_VIEW'], action.type)) {
-    return state.delete(action.id)
-  } else if (action.type === 'RECEIVE_VIEWS') {
-    return Map(action.views.map(
-      (data, index) => [data.id, addView(data)]
-    ))
-  } else {
-    return state
+      return state
   }
 }
 

@@ -20,7 +20,7 @@ let Lists = ({ lists, tasks, dispatch, deletedTasks, selectedObject }) => (
         <UiPaper style={{marginBottom: 40, border: selected ? "1px solid" : "none"}} key={list.id} zDepth={4} >
           <UiCardHeader title={list.name}
             onClick={() => dispatch(toggleSelectObject(list))}
-            onDoubleClick={() => dispatch(toggleUpdateList(true, list.id))} />
+            onDoubleClick={() => dispatch(toggleUpdateList(true, list))} />
           <TaskList key={list.id} {...list} tasks={listTasks} />
         </UiPaper>
       )

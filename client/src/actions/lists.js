@@ -27,40 +27,31 @@ export const addList = (data) => {
   }
 }
 
-export const updateList = (data) => {
-  jsonFetch(data,
+export const updateList = (list) => {
+  jsonFetch(list,
     'http://localhost:5000/lists',
     'PUT'
   )
 
   return {
     type: 'UPDATE_LIST',
-    data: data
+    list: list
   }
 }
 
-export const softDeleteList = (data) => {
-  data = {...data, deleted: true}
-  jsonFetch(data,
-    'http://localhost:5000/lists',
-    'PUT'
-  )
-
-  return {
-    type: 'SOFT_DELETE_LIST',
-    data: data,
-  }
+export const softDeleteList = (list) => {
+  return updateList(list.merge({deleted: true}))
 }
 
-export const deleteList = (data) => {
-  jsonFetch(data,
+export const deleteList = (list) => {
+  jsonFetch({id: list.id},
     'http://localhost:5000/lists',
     'DELETE'
   )
 
   return {
     type: 'DELETE_LIST',
-    data: data
+    list: list
   }
 }
 

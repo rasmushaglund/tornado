@@ -15,9 +15,4 @@ class List extends Immutable.Record({
   }
 }
 
-
-List.fromData = (data) => {
-  return new List(data)
-}
-
 export default List

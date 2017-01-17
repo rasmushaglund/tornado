@@ -16,11 +16,12 @@ export const fetchTasks = () => (dispatch) => {
 export const addTask = (data) => {
   const id = uuidV4()
 
-  var data = data.merge({
+  var data = {
+    ...data,
     id: id,
-    importance: parseInt(taskData.importance) || null,
-    energy: parseInt(taskData.energy) || null
-  })
+    importance: parseInt(data.importance) || null,
+    energy: parseInt(data.energy) || null
+  }
 
   jsonFetch(
     data,
@@ -29,45 +30,45 @@ export const addTask = (data) => {
 
   return {
     type: 'ADD_TASK',
-    data: task
+    data: data
   }
 }
 
-export const updateTask = (data) => {
-  var data =  data.merge({
-    importance: parseInt(taskData.importance) || null,
-    energy: parseInt(taskData.energy) || null
+export const updateTask = (task) => {
+  task =  task.merge({
+    importance: parseInt(task.importance) || null,
+    energy: parseInt(task.energy) || null
   })
 
   jsonFetch(
-    data,
+    task,
     'http://localhost:5000/tasks',
     'PUT'
   )
 
   return {
     type: 'UPDATE_TASK',
-    data: data
+    task: task
   }
 }
 
-export const softDeleteTask = (data) => { 
-  return updateTask(data.merge({deleted: deleted}))
+export const softDeleteTask = (task) => { 
+  return updateTask(task.merge({deleted: !task.deleted}))
 }
 
-export const deleteTask = (data) => {
-  jsonFetch(data,
+export const deleteTask = (task) => {
+  jsonFetch({id: task.id},
     'http://localhost:5000/tasks',
     'DELETE'
   )
 
   return {
     type: 'DELETE_TASK',
-    data: data
+    task: task
   }
 }
 
-export const toggleTask = (data) => {
-  return updateTask(data)
+export const toggleTask = (task) => {
+  return updateTask(task.merge({completed: !task.completed}))
 }
 

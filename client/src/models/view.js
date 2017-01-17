@@ -8,9 +8,4 @@ class View extends Record({
   deleted: false
 }) {}
 
-
-View.fromData = (data) => {
-  return new View(data)
-}
-
 export default View

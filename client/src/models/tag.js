@@ -6,9 +6,4 @@ class Tag extends Record({
   deleted: false
 }) {}
 
-
-Tag.fromData = (data) => {
-  return new Tag(data)
-}
-
 export default Tag

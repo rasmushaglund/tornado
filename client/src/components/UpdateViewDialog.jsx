@@ -30,7 +30,7 @@ class UpdateViewDialog extends React.Component {
     <FlatButton
       label="Delete"
       onTouchTap={() => {
-        dispatch(softDeleteView(view.id))
+        dispatch(softDeleteView(view))
         closeDialog()
       }}
       secondary={true}
@@ -51,9 +51,15 @@ class UpdateViewDialog extends React.Component {
           }
 
           if (view) {
-            dispatch(updateView(view.id, this.textInput.input.value, filterInput.input.value))
+            dispatch(updateView(view.merge({
+              name: this.textInput.input.value, 
+              filter: filterInput.input.value
+            })))
           } else {
-            dispatch(addView(this.textInput.input.value, filterInput.input.value))
+            dispatch(addView({
+              name: this.textInput.input.value, 
+              filter: filterInput.input.value
+            }))
           }
 
           closeDialog()
