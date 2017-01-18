@@ -1,6 +1,7 @@
 from util import db, app, api, bcrypt, loginmanager
 from flask import jsonify, request, session, g
 from flask_restful.utils import cors
+from flask_restful import reqparse
 from flask_login import login_required, login_user, logout_user, current_user
 
 from views.tasks import Tasks
@@ -35,10 +36,15 @@ def register():
 
 @app.route('/login', methods=['POST'])
 def login():
-    json_data = request.json
-    user = User.query.filter_by(email=json_data['email']).first_or_404()
-    if user and bcrypt.check_password_hash(user.password, json_data['password']):
-        login_user(user)
+    parser = reqparse.RequestParser()
+    parser.add_argument('email', type=str, help='User email', location='json')
+    parser.add_argument('password', type=str, help='User password', location='json')
+    parser.add_argument('remember', type=bool, help='Remember me', location='json')
+    args = parser.parse_args
+
+    user = User.query.filter_by(email=args['email']).first_or_404()
+    if user and bcrypt.check_password_hash(user.password, args['password']):
+        login_user(user, remember=args['remember'])
         return jsonify({'status': 'ok'})
     else:
         return jsonify({'status': 'error'})
