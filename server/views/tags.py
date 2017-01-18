@@ -1,14 +1,17 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask_restful import Resource, reqparse
+from flask_login import login_required
 
 from util import db
 from models.tag import Tag
 
 
 class Tags(Resource):
+    decorators = [login_required]
+
     def get(self):
         try:
-            tags = Tag.query.all()
+            tags = Tag.query.filter_by(owner=g.user.id)
             return jsonify(tags=[t.serialize() for t in tags])
 
         except Exception as e:
@@ -25,7 +28,7 @@ class Tags(Resource):
             id = args['id']
             name = args['name']
 
-            new_tag = Tag(id, name, False)
+            new_tag = Tag(id, name, False, g.user.id)
             db.session.add(new_tag)
             db.session.commit()
 
@@ -41,7 +44,7 @@ class Tags(Resource):
             args = parser.parse_args()
 
             id = args['id']
-            tag_to_delete = db.session.query(Tag).filter_by(id=id).first()
+            tag_to_delete = db.session.query(Tag).filter_by(id=id, owner=g.user.id).first()
             db.session.delete(tag_to_delete)
             db.session.commit()
 
@@ -65,7 +68,7 @@ class Tags(Resource):
             if args['deleted'] is not None:
                 values['deleted'] = args['deleted']
 
-            db.session.query(Tag).filter_by(id=id).update(values)
+            db.session.query(Tag).filter_by(id=id, owner=g.user.id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

@@ -1,14 +1,17 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask_restful import Resource, reqparse
+from flask_login import login_required
 
 from util import db
 from models.context import Context
 
 
 class Contexts(Resource):
+    decorators = [login_required]
+
     def get(self):
         try:
-            contexts = Context.query.all()
+            contexts = Context.query.filter_by(owner=g.user.id)
             return jsonify(contexts=[t.serialize() for t in contexts])
 
         except Exception as e:
@@ -25,7 +28,7 @@ class Contexts(Resource):
             id = args['id']
             name = args['name']
 
-            new_context = Context(id, name, False)
+            new_context = Context(id, name, False, g.user.id)
             db.session.add(new_context)
             db.session.commit()
 
@@ -41,7 +44,7 @@ class Contexts(Resource):
             args = parser.parse_args()
 
             id = args['id']
-            context_to_delete = db.session.query(Context).filter_by(id=id).first()
+            context_to_delete = db.session.query(Context).filter_by(id=id, owner=g.user.id).first()
             db.session.delete(context_to_delete)
             db.session.commit()
 
@@ -67,7 +70,7 @@ class Contexts(Resource):
             if args['deleted'] is not None:
                 values['deleted'] = args['deleted']
 
-            db.session.query(Context).filter_by(id=id).update(values)
+            db.session.query(Context).filter_by(id=id, owner=g.user.id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

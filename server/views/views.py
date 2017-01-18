@@ -1,14 +1,17 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask_restful import Resource, reqparse
+from flask_login import login_required
 
 from util import db, app
 from models.view import View
 
 
 class Views(Resource):
+    decorators = [login_required]
+
     def get(self):
         try:
-            views = View.query.all()
+            views = View.query.filter_by(owner=g.user.id)
             return jsonify(views=[t.serialize() for t in views])
 
         except Exception as e:
@@ -30,7 +33,7 @@ class Views(Resource):
             filter = args['filter']
             description = args['description']
 
-            new_view = View(id, name, filter, False, description)
+            new_view = View(id, name, filter, False, description, g.user.id)
             db.session.add(new_view)
             db.session.commit()
 
@@ -47,7 +50,7 @@ class Views(Resource):
             args = parser.parse_args()
 
             id = args['id']
-            view_to_delete = db.session.query(View).filter_by(id=id).first()
+            view_to_delete = db.session.query(View).filter_by(id=id, owner=g.user.id).first()
             db.session.delete(view_to_delete)
             db.session.commit()
 
@@ -80,7 +83,7 @@ class Views(Resource):
             if args['filter'] is not None:
                 values['filter'] = args['filter']
 
-            db.session.query(View).filter_by(id=id).update(values)
+            db.session.query(View).filter_by(id=id, owner=g.user.id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

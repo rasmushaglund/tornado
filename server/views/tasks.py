@@ -1,14 +1,17 @@
 import datetime
-from flask import jsonify
+from flask import jsonify, g
+from flask_login import login_required
 from flask_restful import Resource, reqparse, inputs
 from util import db, app
 from models.task import Task
 
 
 class Tasks(Resource):
+    decorators = [login_required]
+
     def get(self):
         try:
-            tasks = Task.query.all()
+            tasks = Task.query.filter_by(owner=g.user.id)
             return jsonify(tasks=[t.serialize() for t in tasks])
 
         except Exception as e:
@@ -43,7 +46,7 @@ class Tasks(Resource):
         deadline = args['deadline']
         time = args['time']
 
-        new_task = Task(id, lists, contexts, tags, False, name, False, importance, description, energy, deadline, time)
+        new_task = Task(id, lists, contexts, tags, False, name, False, importance, description, energy, deadline, time, g.user.id)
         db.session.add(new_task)
         db.session.commit()
 
@@ -60,7 +63,7 @@ class Tasks(Resource):
             args = parser.parse_args()
 
             id = args['id']
-            task_to_delete = db.session.query(Task).filter_by(id=id).first()
+            task_to_delete = db.session.query(Task).filter_by(id=id, owner=g.user.id).first()
             db.session.delete(task_to_delete)
             db.session.commit()
 
@@ -112,7 +115,7 @@ class Tasks(Resource):
             if values['contexts'] is not None:
                 values['contexts'] = ','.join(str(x) for x in args['contexts'])
 
-            db.session.query(Task).filter_by(id=id).update(values)
+            db.session.query(Task).filter_by(id=id, owner=g.user.id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

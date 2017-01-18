@@ -1,7 +1,7 @@
-from util import db, app, api, bcrypt
-from flask import jsonify, request, session
+from util import db, app, api, bcrypt, loginmanager
+from flask import jsonify, request, session, g
 from flask_restful.utils import cors
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, login_user, logout_user, current_user
 
 from views.tasks import Tasks
 from views.views import Views
@@ -57,6 +57,15 @@ def add_cors_header(response):
     response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, PATCH, DELETE, OPTIONS'
     return response
+
+@loginmanager.user_loader
+def load_user(user_id):
+    print(user_id)
+    return User.query.filter_by(id=user_id).first()
+
+@app.before_request
+def before_request():
+    g.user = current_user
 
 app.after_request(add_cors_header)
 

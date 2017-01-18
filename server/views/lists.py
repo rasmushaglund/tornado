@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask_restful import Resource, reqparse
 from flask_login import login_required
 
@@ -7,16 +7,11 @@ from models.list import List
 
 
 class Lists(Resource):
-    # method_decorators = {
-    #    'get': [login_required],
-    #    'post': [login_required],
-    #    'delete': [login_required],
-    #    'put': [login_required]
-    #}
+    decorators = [login_required]
 
     def get(self):
         try:
-            lists = List.query.all()
+            lists = List.query.filter_by(owner=g.user.id)
             return jsonify(lists=[t.serialize() for t in lists])
 
         except Exception as e:
@@ -38,7 +33,7 @@ class Lists(Resource):
             description = args['description']
             children = args['children']
 
-            new_list = List(id, name, False, description, children)
+            new_list = List(id, name, False, description, children, g.user.id)
             db.session.add(new_list)
             db.session.commit()
 
@@ -55,7 +50,7 @@ class Lists(Resource):
             args = parser.parse_args()
 
             id = args['id']
-            list_to_delete = db.session.query(List).filter_by(id=id).first()
+            list_to_delete = db.session.query(List).filter_by(id=id, owner=g.user.id).first()
             db.session.delete(list_to_delete)
             db.session.commit()
 
@@ -85,7 +80,7 @@ class Lists(Resource):
             if args['deleted'] is not None:
                 values['deleted'] = args['deleted']
 
-            db.session.query(List).filter_by(id=id).update(values)
+            db.session.query(List).filter_by(id=id, owner=g.user.id).update(values)
             db.session.commit()
 
             return {'status': 'ok'}

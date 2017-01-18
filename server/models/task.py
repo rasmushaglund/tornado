@@ -16,8 +16,9 @@ class Task(db.Model):
     energy = db.Column(db.Integer())
     deadline = db.Column(db.Date())
     time = db.Column(db.String(20))
+    owner = db.Column(db.Integer())
 
-    def __init__(self, id, lists, contexts, tags, completed, name, deleted, importance, description, energy, deadline, time):
+    def __init__(self, id, lists, contexts, tags, completed, name, deleted, importance, description, energy, deadline, time, owner):
         self.id = id
         self.lists = lists
         self.contexts = contexts
@@ -30,6 +31,7 @@ class Task(db.Model):
         self.description = description
         self.time = time,
         self.energy = energy
+        self.owner = owner
 
     def serialize(self):
         if self.contexts:
@@ -59,5 +61,6 @@ class Task(db.Model):
             'deadline': self.deadline,
             'description': self.description,
             'time': self.time,
-            'energy': self.energy
+            'energy': self.energy,
+            'owner': self.owner
         }
