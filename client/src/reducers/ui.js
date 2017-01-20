@@ -5,6 +5,9 @@ const initialState = Immutable.fromJS({
   editTaskVisible: false,
   editListVisible: false,
   editContextVisible: false,
+  loginVisible: false,
+  loginFailedVisible: false,
+  registerVisible: false,
   currentView: null,
   currentList: null,
   currentTask: null,
@@ -43,6 +46,26 @@ const ui = (state = initialState, action) => {
 
       return state.merge({
         selectedObject: newSelectedObject
+      })
+    case "TOGGLE_LOGIN":
+      return state.merge({
+        loginVisible: action.visible,
+        loginFailedVisible: false,
+        registerVisible: false
+      })
+    case "TOGGLE_REGISTER":
+      return state.merge({
+        registerVisible: action.visible,
+        loginVisible: false
+      })
+    case "LOGIN_SUCCESS":
+      return state.merge({
+        loginVisible: false,
+        loginFailedVisible: false
+      })
+    case "LOGIN_FAILED":
+      return state.set({
+        loginFailedVisible: true
       })
     default:
       return state

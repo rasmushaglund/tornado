@@ -40,14 +40,23 @@ export function sort(o, conditionsString) {
   return o
 }
 
-export const jsonFetch = (data, url, method = 'POST') => {
-  return fetch(url, {
+export const jsonFetch = (data, url, method = 'POST', credentials = true) => {
+  let headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  }
+
+  let params = {
     method: method, 
-    body: JSON.stringify(data), 
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-  })
+    //mode: "cors",
+    headers: headers,
+    credentials: 'include'
+  }
+
+  if (method === 'POST' || method === 'PUT') {
+    params['body'] = JSON.stringify(data)
+  }
+  
+  return fetch(url, params)
 }
 

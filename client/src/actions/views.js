@@ -2,9 +2,9 @@ import { jsonFetch } from '../util'
 
 const uuidV4 = require('uuid/v4')
 
-export const receiveViews = (json) => ({
+export const receiveViews = (views) => ({
   type: 'RECEIVE_VIEWS',
-  views: json.views
+  views: views
 })
 
 export const fetchViews = () => (dispatch) => {

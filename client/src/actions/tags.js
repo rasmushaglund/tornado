@@ -2,9 +2,9 @@ import { jsonFetch } from '../util'
 
 const uuidV4 = require('uuid/v4')
 
-export const receiveTags = (json) => ({
+export const receiveTags = (tags) => ({
   type: 'RECEIVE_TAGS',
-  tags: json.tags
+  tags: tags
 })
 
 export const fetchTags = () => (dispatch) => {

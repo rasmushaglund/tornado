@@ -2,9 +2,9 @@ import { jsonFetch } from '../util'
 
 const uuidV4 = require('uuid/v4')
 
-export const receiveContexts = (json) => ({
+export const receiveContexts = (contexts) => ({
   type: 'RECEIVE_CONTEXTS',
-  contexts: json.contexts
+  contexts: contexts
 })
 
 export const fetchContexts = () => (dispatch) => {

@@ -11,6 +11,11 @@ from views.contexts import Contexts
 from views.tags import Tags
 
 from models.user import User
+from models.view import View
+from models.task import Task
+from models.context import Context
+from models.tag import Tag
+from models.list import List
 
 api.add_resource(Tasks, '/tasks')
 api.add_resource(Contexts, '/contexts')
@@ -40,7 +45,7 @@ def login():
     parser.add_argument('email', type=str, help='User email', location='json')
     parser.add_argument('password', type=str, help='User password', location='json')
     parser.add_argument('remember', type=bool, help='Remember me', location='json')
-    args = parser.parse_args
+    args = parser.parse_args()
 
     user = User.query.filter_by(email=args['email']).first_or_404()
     if user and bcrypt.check_password_hash(user.password, args['password']):
@@ -49,18 +54,17 @@ def login():
     else:
         return jsonify({'status': 'error'})
 
-def logout():
-    logout_user()
-
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 @login_required
 def logout():
-    session.pop('logged_in', None)
+    logout_user()
     return jsonify({'status': 'ok'})
 
 def add_cors_header(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8888'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Expose-Headers'] = 'Set-Cookie'
+    response.headers['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, PATCH, DELETE, OPTIONS'
     return response
 
@@ -72,6 +76,22 @@ def load_user(user_id):
 @app.before_request
 def before_request():
     g.user = current_user
+
+@app.route('/init')
+@login_required
+def init():
+    views = View.query.filter_by(owner=g.user.id)
+    lists = List.query.filter_by(owner=g.user.id)
+    tags = Tag.query.filter_by(owner=g.user.id)
+    contexts = Context.query.filter_by(owner=g.user.id)
+    tasks = Task.query.filter_by(owner=g.user.id)
+    return jsonify(
+        views=[t.serialize() for t in views],
+        lists=[t.serialize() for t in lists],
+        tags=[t.serialize() for t in tags],
+        contexts=[t.serialize() for t in contexts],
+        tasks=[t.serialize() for t in tasks]
+    )
 
 app.after_request(add_cors_header)
 

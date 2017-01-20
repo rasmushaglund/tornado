@@ -33,3 +33,12 @@ export const toggleUpdateView = (visible, view) => ({
   visible: visible
 })
 
+export const toggleLogin = (visible) => ({
+  type: 'TOGGLE_LOGIN',
+  visible: visible
+})
+
+export const toggleRegister = (visible) => ({
+  type: 'TOGGLE_REGISTER',
+  visible: visible
+})
