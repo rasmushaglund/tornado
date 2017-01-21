@@ -130,79 +130,106 @@ class UpdateTaskDialog extends React.Component {
     }
   }
 
+  handleAddContext = (contextString) => {
+    let newContextId
+    let existingContext = _.find(this.state.contextDataSource, context => context.textKey === contextString)
+
+    if (existingContext) {
+      newContextId = existingContext.valueKey
+    } else {
+      let newContext = this.props.dispatch(addContext({name: contextString}))
+      newContextId = newContext.id
+    }
+
+    this.setState({
+      contexts: this.state.contexts.add(newContextId), 
+      contextSearchText: ''
+    })
+    this.contextInput.refs.searchTextField.input.value = ''
+    this.contextInput.close()
+  }
+
+  handleContextBlur = () => {
+    let s = this.contextInput.refs.searchTextField.input.value
+
+    this.handleAddContext(s)
+  }
+
   handleContextInput = (s) => {
     let parts = s.split(",")
 
     if (parts.length > 1 && parts[0].length > 0) {
-      let newContextId
-      let contextString = parts[0].trim()
-      let existingContext = _.find(this.state.contextDataSource, context => context.textKey === contextString)
-
-      if (existingContext) {
-        newContextId = existingContext.valueKey
-      } else {
-        let newContextAction = this.props.dispatch(addContext({name: contextString}))
-        newContextId = newContextAction.data.id
-      }
-
-      this.setState({
-        contexts: this.state.contexts.add(newContextId), 
-        contextSearchText: ''
-      })
-      this.contextInput.refs.searchTextField.input.value = ''
-      this.contextInput.close()
+      this.handleAddContext(parts[0].trim())
     } else {
       this.setState({contextSearchText: s})
     }
+  }
+
+  handleAddList = (listString) => {
+    let newListId
+    let existingList = _.find(this.state.listDataSource, list => list.textKey === listString)
+
+    if (existingList) {
+      newListId = existingList.valueKey
+    } else {
+      let newList = this.props.dispatch(addList({name: listString}))
+      newListId = newList.id
+    }
+
+    this.setState({
+      lists: this.state.lists.add(newListId), 
+      listSearchText: ''
+    })
+    this.listInput.refs.searchTextField.input.value = ''
+    this.listInput.close()
+  }
+ 
+  handleListBlur = () => {
+    let s = this.listInput.refs.searchTextField.input.value
+
+    this.handleAddList(s)
   }
 
   handleListInput = (s) => {
     let parts = s.split(",")
 
     if (parts.length > 1 && parts[0].length > 0) {
-      let newListId
-      let listString = parts[0].trim()
-      let existingList = _.find(this.state.listDataSource, list => list.textKey === listString)
-
-      if (existingList) {
-        newListId = existingList.valueKey
-      } else {
-        let newListAction = this.props.dispatch(addList({name: listString}))
-        newListId = newListAction.data.id
-      }
-
-      this.setState({
-        lists: this.state.lists.add(newListId), 
-        listSearchText: ''
-      })
-      this.listInput.refs.searchTextField.input.value = ''
-      this.listInput.close()
+      this.handleAddList(parts[0].trim())
     } else {
       this.setState({listSearchText: s})
     }
+  }
+
+  handleAddTag = (tagString) => {
+    let newTagId
+    let existingTag = _.find(this.state.tagDataSource, tag => tag.textKey === tagString)
+
+    if (existingTag) {
+      newTagId = existingTag.valueKey
+    } else {
+      let newTag = this.props.dispatch(addTag({name: tagString}))
+      newTagId = newTag.id
+    }
+
+    this.setState({
+      tags: this.state.tags.add(newTagId), 
+      tagSearchText: ''
+    })
+    this.tagInput.refs.searchTextField.input.value = ''
+    this.tagInput.close()
+  }
+
+  handleTagBlur = () => {
+    let s = this.tagInput.refs.searchTextField.input.value
+
+    this.handleAddTag(s)
   }
   
   handleTagInput = (s) => {
     let parts = s.split(",")
 
     if (parts.length > 1 && parts[0].length > 0) {
-      let newTagId
-      let tagString = parts[0].trim()
-      let existingTag = _.find(this.state.tagDataSource, tag => tag.textKey === tagString)
-
-      if (existingTag) {
-        newTagId = existingTag.valueKey
-      } else {
-        let newTagAction = this.props.dispatch(addTag({name: tagString}))
-        newTagId = newTagAction.data.id
-      }
-
-      this.setState({
-        tags: this.state.tags.add(newTagId), 
-        tagSearchText: ''
-      })
-      this.tagInput.refs.searchTextField.input.value = ''
-      this.tagInput.close()
+      this.handleAddTag(parts[0].trim())
     } else {
       this.setState({tagSearchText: s})
     }
@@ -308,6 +335,7 @@ class UpdateTaskDialog extends React.Component {
             onUpdateInput={this.handleTagInput}
             searchText={this.state.tagSearchText}
             filter={AutoComplete.fuzzyFilter}
+            onBlur={this.handleTagBlur}
             dataSourceConfig={dataSourceConfig}
             menuCloseDelay={0}
             dataSource={this.state.tagDataSource} />
@@ -321,6 +349,7 @@ class UpdateTaskDialog extends React.Component {
             searchText={this.state.contextSearchText}
             filter={AutoComplete.fuzzyFilter}
             menuCloseDelay={0}
+            onBlur={this.handleContextBlur}
             dataSourceConfig={dataSourceConfig}
             dataSource={this.state.contextDataSource} />
             <div style={styles.wrapper}>{taskContexts}</div>
@@ -334,6 +363,7 @@ class UpdateTaskDialog extends React.Component {
             menuCloseDelay={0}
             filter={AutoComplete.fuzzyFilter}
             dataSourceConfig={dataSourceConfig}
+            onBlur={this.handleListBlur}
             dataSource={this.state.listDataSource} />   
             <div style={styles.wrapper}>{taskLists}</div> 
           </div>
