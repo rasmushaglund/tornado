@@ -13,6 +13,7 @@ const initialState = Immutable.fromJS({
   currentTask: null,
   currentContext: null,
   selectedObject: null,
+  message: ""
 })
 
 const ui = (state = initialState, action) => {
@@ -66,6 +67,10 @@ const ui = (state = initialState, action) => {
     case "LOGIN_FAILED":
       return state.set({
         loginFailedVisible: true
+      })
+    case "SEND_MESSAGE":
+      return state.merge({
+        message: action.message
       })
     default:
       return state

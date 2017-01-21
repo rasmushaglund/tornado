@@ -4,7 +4,7 @@ import { receiveTasks } from './tasks'
 import { receiveLists } from './lists'
 import { receiveTags } from './tags'
 import { receiveContexts } from './contexts'
-import { toggleLogin, toggleRegister } from './ui'
+import { toggleLogin, toggleRegister, sendMessage } from './ui'
 
 export const initApp = () => (dispatch) => {
   return jsonFetch({}, 'http://localhost:5000/init', 'GET')
@@ -26,12 +26,20 @@ export const initApp = () => (dispatch) => {
 
 export const handleLoginResponse = (response) => (dispatch) => {
   if (response.ok) {
+    let user = response.user
+
     dispatch(initApp())
-    return {
-      type: 'LOGIN_SUCCESS',
-      user: response.user
-    }
+
+    response.json().then(json => {
+      dispatch(sendMessage("Welcome"))
+
+      return {
+        type: 'LOGIN_SUCCESS',
+        user: user
+      }
+    })
   } else {
+    dispatch(sendMessage("Login failed"))
     return {
       type: 'LOGIN_FAILED'
     }
@@ -41,26 +49,30 @@ export const handleLoginResponse = (response) => (dispatch) => {
 export const handleLogoutResponse = (response) => (dispatch) => {
   if (response.ok) {
     dispatch(toggleLogin(true))
+    dispatch(sendMessage("Logged out"))
     return {
       type: 'LOGOUT_SUCCESS'
     }
   } else {
+    dispatch(sendMessage("Logout failed"))
     return {
       type: 'LOGOUT_FAILED'
     }
   }
 }
 
-export const handleRegisterResponse = (response) => (dispatch) => {
-  if (response.ok) {
-    dispatch(toggleRegister(false))
-    dispatch(toggleLogin(true))
-    return {
-      type: 'REGISTER_SUCCESS'
-    }
-  } else {
-    return {
-      type: 'REGISTER_FAILED'
+export const handleRegisterResponse = (response) => {
+  return (dispatch) => {
+    if (response.ok) {
+      dispatch(toggleRegister(false))
+      dispatch(toggleLogin(true))
+      return {
+        type: 'REGISTER_SUCCESS'
+      }
+    } else {
+      return {
+        type: 'REGISTER_FAILED'
+      }
     }
   }
 }

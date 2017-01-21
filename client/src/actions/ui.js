@@ -42,3 +42,8 @@ export const toggleRegister = (visible) => ({
   type: 'TOGGLE_REGISTER',
   visible: visible
 })
+
+export const sendMessage = (message) => ({
+  type: 'SEND_MESSAGE',
+  message: message
+})

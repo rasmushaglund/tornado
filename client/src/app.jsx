@@ -19,6 +19,7 @@ import Lists from './components/Lists'
 import Views from './components/Views'
 import Login from './components/Login'
 import Register from './components/Register'
+import Messages from './components/Messages'
 
 import UiAppBar from 'material-ui/AppBar'
 
@@ -82,6 +83,7 @@ class App extends React.Component {
         <AddTask />
         <Views />
         <Lists />
+        <Messages />
       </div>
     )
   }

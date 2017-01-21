@@ -1,4 +1,5 @@
 import { jsonFetch } from '../util'
+import { sendMessage } from './ui'
 
 const uuidV4 = require('uuid/v4')
 
@@ -13,45 +14,68 @@ export const fetchLists = () => (dispatch) => {
     .then(json => dispatch(receiveLists(json)))
 }
 
-export const addList = (data) => {
+export const addList = (data) => (dispatch) => {
   const id = uuidV4()
-  data = {...data, id: id}
+  let newData = {...data, id: id}
   
-  jsonFetch(data,
+  jsonFetch(newData,
     'http://localhost:5000/lists'
-  )
+  ).then(response => {
+    if (response.ok) {
+      dispatch(sendMessage("Added list " + newData.name))
+    } else {
+      dispatch(sendMessage("Failed adding list " + newData.name))
+    }
+  })
 
-  return {
+
+  dispatch({
     type: 'ADD_LIST',
-    data: data
-  }
+    data: newData
+  })
+
+  return newData
 }
 
-export const updateList = (list) => {
+export const updateList = (list) => (dispatch) => {
   jsonFetch(list,
     'http://localhost:5000/lists',
     'PUT'
-  )
+  ).then(response => {
+    if (response.ok) {
+      dispatch(sendMessage("Updated list " + list.name))
+    } else {
+      dispatch(sendMessage("Failed updating list " + list.name))
+    }
+  })
 
-  return {
+
+  dispatch({
     type: 'UPDATE_LIST',
     list: list
-  }
+  })
 }
 
 export const softDeleteList = (list) => {
   return updateList(list.merge({deleted: true}))
 }
 
-export const deleteList = (list) => {
+export const deleteList = (list) => (dispatch) => {
   jsonFetch({id: list.id},
     'http://localhost:5000/lists',
     'DELETE'
-  )
+  ).then(response => {
+    if (response.ok) {
+      dispatch(sendMessage("Deleted list " + list.name))
+    } else {
+      dispatch(sendMessage("Failed deleting list " + list.name))
+    }
+  })
 
-  return {
+
+  dispatch({
     type: 'DELETE_LIST',
     list: list
-  }
+  })
 }
 

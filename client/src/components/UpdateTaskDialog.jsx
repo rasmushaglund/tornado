@@ -141,8 +141,7 @@ class UpdateTaskDialog extends React.Component {
       if (existingContext) {
         newContextId = existingContext.valueKey
       } else {
-        let newContextAction = addContext({name: contextString})
-        this.props.dispatch(newContextAction)
+        let newContextAction = this.props.dispatch(addContext({name: contextString}))
         newContextId = newContextAction.data.id
       }
 
@@ -168,8 +167,7 @@ class UpdateTaskDialog extends React.Component {
       if (existingList) {
         newListId = existingList.valueKey
       } else {
-        let newListAction = addList({name: listString})
-        this.props.dispatch(newListAction)
+        let newListAction = this.props.dispatch(addList({name: listString}))
         newListId = newListAction.data.id
       }
 
@@ -195,8 +193,7 @@ class UpdateTaskDialog extends React.Component {
       if (existingTag) {
         newTagId = existingTag.valueKey
       } else {
-        let newTagAction = addTag({name: tagString})
-        this.props.dispatch(newTagAction)
+        let newTagAction = this.props.dispatch(addTag({name: tagString}))
         newTagId = newTagAction.data.id
       }
 
