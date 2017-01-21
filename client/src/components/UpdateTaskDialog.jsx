@@ -134,19 +134,20 @@ class UpdateTaskDialog extends React.Component {
     let parts = s.split(",")
 
     if (parts.length > 1 && parts[0].length > 0) {
-      let newContext
+      let newContextId
       let contextString = parts[0].trim()
       let existingContext = _.find(this.state.contextDataSource, context => context.textKey === contextString)
 
       if (existingContext) {
-        newContext = {id: existingContext.valueKey}
+        newContextId = existingContext.valueKey
       } else {
-        newContext = addContext(contextString)
-        this.props.dispatch(newContext)
+        let newContextAction = addContext({name: contextString})
+        this.props.dispatch(newContextAction)
+        newContextId = newContextAction.data.id
       }
 
       this.setState({
-        contexts: this.state.contexts.add(newContext.id), 
+        contexts: this.state.contexts.add(newContextId), 
         contextSearchText: ''
       })
       this.contextInput.refs.searchTextField.input.value = ''
@@ -160,19 +161,20 @@ class UpdateTaskDialog extends React.Component {
     let parts = s.split(",")
 
     if (parts.length > 1 && parts[0].length > 0) {
-      let newList
+      let newListId
       let listString = parts[0].trim()
       let existingList = _.find(this.state.listDataSource, list => list.textKey === listString)
 
       if (existingList) {
-        newList = {id: existingList.valueKey}
+        newListId = existingList.valueKey
       } else {
-        newList = addList(listString)
-        this.props.dispatch(newList)
+        let newListAction = addList({name: listString})
+        this.props.dispatch(newListAction)
+        newListId = newListAction.data.id
       }
 
       this.setState({
-        lists: this.state.lists.add(newList), 
+        lists: this.state.lists.add(newListId), 
         listSearchText: ''
       })
       this.listInput.refs.searchTextField.input.value = ''
@@ -186,19 +188,20 @@ class UpdateTaskDialog extends React.Component {
     let parts = s.split(",")
 
     if (parts.length > 1 && parts[0].length > 0) {
-      let newTag
+      let newTagId
       let tagString = parts[0].trim()
       let existingTag = _.find(this.state.tagDataSource, tag => tag.textKey === tagString)
 
       if (existingTag) {
-        newTag = {id: existingTag.valueKey}
+        newTagId = existingTag.valueKey
       } else {
-        newTag = addTag(tagString)
-        this.props.dispatch(newTag)
+        let newTagAction = addTag({name: tagString})
+        this.props.dispatch(newTagAction)
+        newTagId = newTagAction.data.id
       }
 
       this.setState({
-        tags: this.state.tags.add(newTag), 
+        tags: this.state.tags.add(newTagId), 
         tagSearchText: ''
       })
       this.tagInput.refs.searchTextField.input.value = ''
@@ -367,10 +370,11 @@ class UpdateTaskDialog extends React.Component {
             if (task) {
               dispatch(
                 updateTask(task.merge({
+                  ...taskData,
                   completed: this.state.completed,
                   deleted: this.state.deleted,
-                }))
-              )
+                })
+              ))
             } else {
               dispatch(
                 addTask(taskData)
